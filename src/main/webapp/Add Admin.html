@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Recruiter | JobBoard</title>
+
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="css/custom-bs.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="fonts/icomoon/style.css">
+  <link rel="stylesheet" href="fonts/line-icons/style.css">
+  <link rel="stylesheet" href="css/animate.min.css">
+  <link rel="stylesheet" href="css/bootstrap-select.min.css">
+  <link rel="stylesheet" href="css/jquery.fancybox.min.css">
+  <link rel="stylesheet" href="css/owl.carousel.min.css">
+  <link rel="stylesheet" href="css/quill.snow.css">
+    <!-- Tailwind CSS -->
+   <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- jQuery -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+  <!-- SweetAlert2 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <!-- MultiSelect Plugin -->
+  <link rel="stylesheet" href="plugin/jQuery-MultiSelect-master/jquery.multiselect.css">
+  <script src="plugin/jQuery-MultiSelect-master/jquery.multiselect.js"></script>
+  <script src="js/form-protection.js"></script>
+  
+  <link rel="stylesheet" href="css/style.css">
+  
+
+<style>
+  body {
+    background-image: url('images/hero_1.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    min-height: 100vh;
+    padding-top: 80px; /* space for header */
+  }
+  .register-box {
+    background: #fff;
+    border-radius: 10px;
+    padding: 30px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    max-width: 500px;
+    margin: 60px auto;
+  }
+  label span { color: red; }
+  small.text-red { color: red; display: none; }
+
+  header.site-navbar {
+    background: rgba(45, 55, 72, 0.7); /* semi-transparent dark */
+    color: #fff;
+    border-bottom: none;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 100;
+    height: 80px;
+    display: flex;
+    align-items: center;
+  }
+  header.site-navbar .site-logo a {
+    color: #fff !important;
+    font-weight: bold;
+    font-size: 2rem;
+    letter-spacing: 2px;
+  }
+  header.site-navbar nav a {
+    color: #fff !important;
+    font-weight: 500;
+    font-size: 1.1rem;
+    margin-left: 30px;
+    transition: color 0.2s;
+  }
+  header.site-navbar nav a:hover {
+    color: #89ba16 !important;
+  }
+  .site-navbar .container-fluid {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 80px;
+  }
+</style>
+
+<header class="site-navbar">
+  <div class="container-fluid">
+    <div class="site-logo col-6"><a href="index.html">JOBBOARD</a></div>
+    <nav class="mx-auto site-navigation">
+      <ul class="site-menu js-clone-nav ml-0 pl-0" style="display:flex;list-style:none;margin:0;">
+        <li><a href="admin_home.html" class="nav-link">Home</a></li>
+        <li><a href="about.html" class="nav-link">About</a></li>
+        <li><a href="contact.html" class="nav-link">Contact</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+	<div class="flex items-center justify-center min-h-screen">
+		<div class="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md">
+			<h2 class="text-2xl font-bold text-center text-blue-700 mb-6">Admin</h2>
+
+			<form id="registerForm" action="AddAdminServlet" method="post">
+				<!-- Name -->
+				<label class="block font-medium text-gray-700"> admin_name <span
+					class="text-red-500">*</span></label> <input type="text" id="user_name"
+					name="user_name"
+					class="border border-gray-300 rounded-lg w-full p-2 focus:outline-blue-500"
+					maxlength="100" placeholder="Enter your name"> <small
+					class="text-red-500 hidden" id="nameError"></small>
+
+
+
+
+			
+				<label class="block font-medium text-gray-700 mt-3">Email <span
+					class="text-red-500">*</span></label> <input type="email" id="email"
+					name="email"
+					class="border border-gray-300 rounded-lg w-full p-2 focus:outline-blue-500"
+					placeholder="Enter your email"> <small
+					class="text-red-500 hidden" id="emailError"></small>
+
+	
+				<label class="block font-medium text-gray-700 mt-3">Password
+					<span class="text-red-500">*</span>
+				</label> <input type="password" id="password" name="password"
+					class="border border-gray-300 rounded-lg w-full p-2 focus:outline-blue-500"
+					placeholder="Enter password"> <small
+					class="text-red-500 hidden" id="passwordError"></small> <label
+					class="block font-medium text-gray-700 mt-3">Phone <span
+					class="text-red-500">*</span></label> <input type="text" id="phone"
+					name="phone" maxlength="10"
+					class="border border-gray-300 rounded-lg w-full p-2 focus:outline-blue-500"
+					placeholder="Enter phone number"> <small
+					class="text-red-500 hidden" id="phoneError"></small>
+
+
+
+		
+				<label class="block font-medium text-gray-700 mt-3">Designation</label>
+				<input type="text" id="Designation" name="Designation"
+					class="border border-gray-300 rounded-lg w-full p-2 focus:outline-blue-500"
+					placeholder="Designation">
+
+				<button type="submit"
+					class="w-full mt-5 bg-blue-600 text-white font-semibold py-2 rounded-lg hover:bg-blue-700">Submit</button>
+
+				<p class="text-right text-sm mt-3">
+					<a href="admin_home.html" class="text-blue-600 hover:underline">Back
+						to Home</a>
+				</p>
+			</form>
+
+		</div>
+	</div>
+
+	<footer>
+		<p>&copy; 2025 JobBoard. All Rights Reserved.</p>
+	</footer>
+
+	<!-- VALIDATION SCRIPT -->
+	<script>
+  $(function () {
+
+      
+  
+  $("#user_name").on("input", function () {
+  
+    const name = $(this).val().trim();
+  
+    if (name === "") {
+  
+      $("#nameError").removeClass("hidden").text("Name should not be empty.");
+  
+    } else if (!/^[A-Za-z\s]{1,100}$/.test(name)) {
+  
+      $("#nameError").removeClass("hidden").text("Invalid input — numbers & special characters not allowed.");
+  
+    } else {
+  
+      $("#nameError").addClass("hidden");
+  
+    }
+  
+  });
+  
+ 
+
+  
+  $("#email").on("input", function () {
+  
+    const email = $(this).val();
+  
+    const valid = /^[a-zA-Z0-9._%+-]{2,}@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email);
+  
+    if (email === "") {
+  
+      $("#emailError").removeClass("hidden").text("Email should not be empty.");
+  
+    } else if (!valid) {
+  
+      $("#emailError").removeClass("hidden").text("Invalid email format (must include @ and domain).");
+  
+    } else {
+  
+      $("#emailError").addClass("hidden");
+  
+    }
+  
+  });
+  
+ 
+  
+  $("#password").on("input", function () {
+  
+    const password = $(this).val();
+  
+    const valid = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{6,}$/.test(password);
+  
+    if (password === "") {
+  
+      $("#passwordError").removeClass("hidden").text("Password should not be empty.");
+  
+    } else if (!valid) {
+  
+      $("#passwordError").removeClass("hidden").text("Password ≥6 chars, 1 uppercase, 1 lowercase & 1 special character.");
+  
+    } else {
+  
+      $("#passwordError").addClass("hidden");
+  
+    }
+  
+  });
+  
+ 
+
+  
+  $("#phone").on("input", function () {
+  
+    let phone = $(this).val().replace(/\D/g, ""); 
+  
+    if (phone.length > 10) phone = phone.slice(0, 10);
+  
+    $(this).val(phone);
+  
+ 
+  
+    if (phone === "") {
+  
+      $("#phoneError").removeClass("hidden").text("Phone should not be empty.");
+  
+    } else if (phone.length < 10) {
+  
+      $("#phoneError").removeClass("hidden").text("Phone must be 10 digits.");
+  
+    } else {
+  
+      $("#phoneError").addClass("hidden");
+  
+    }
+  
+  });
+  
+  $("#registerForm").on("submit", function (e) {
+      e.preventDefault();
+  
+
+
+  
+    let valid = true;
+  
+ 
+  
+    const nameVal = $("#user_name").val().trim();
+  
+    if (nameVal === "" || !/^[A-Za-z\s]{1,100}$/.test(nameVal)) {
+  
+      valid = false;
+  
+      $("#nameError").removeClass("hidden").text(nameVal === "" ? "Name should not be empty." : "Invalid input — numbers & special characters not allowed.");
+  
+    }
+  
+ 
+  
+
+  
+    const emailVal = $("#email").val().trim();
+  
+    const emailValid = /^[a-zA-Z0-9._%+-]{2,}@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(emailVal);
+  
+    if (emailVal === "" || !emailValid) {
+  
+      valid = false;
+  
+      $("#emailError").removeClass("hidden").text(emailVal === "" ? "Email should not be empty." : "Invalid email format.");
+  
+    }
+  
+ 
+  
+    
+  
+    const passwordVal = $("#password").val();
+  
+    const passwordValid = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{6,}$/.test(passwordVal);
+  
+    if (passwordVal === "" || !passwordValid) {
+  
+      valid = false;
+  
+      $("#passwordError").removeClass("hidden").text(passwordVal === "" ? "Password should not be empty." : "Password ≥6 chars, 1 uppercase, 1 lowercase & 1 special char.");
+  
+    }
+   
+  
+    const phoneVal = $("#phone").val();
+  
+    if (phoneVal === "" || phoneVal.length !== 10) {
+  
+      valid = false;
+  
+      $("#phoneError").removeClass("hidden").text(phoneVal === "" ? "Phone should not be empty." : "Phone must be 10 digits.");
+  
+    }
+   
+   
+  
+       
+        if (!valid) return;
+
+        $.ajax({
+          url: 'AddAdminServlet',
+          type: 'POST',
+          data: $(this).serialize(),
+          success: function (response) {
+            if (response.trim() === "success") {
+              Swal.fire({
+                icon: 'success',
+                title: 'Success!',
+                text: 'Admin added successfully!',
+                confirmButtonColor: '#28a745'
+              }).then(() => {
+                $("#registerForm")[0].reset();
+                $("small").addClass("hidden");
+                window.location.href = "admin_home.html";
+              });
+            } else {
+              Swal.fire({
+                icon: 'error',
+                title: 'Failed',
+                text: response,
+                confirmButtonColor: '#28a745'
+              });
+            }
+          },
+          error: function () {
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: 'Error occurred! Try again.',
+              confirmButtonColor: '#28a745'
+            });
+          }
+        });
+      });
+    });
+    </script>
+
+</body>
+</html>

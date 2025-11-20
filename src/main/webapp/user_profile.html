@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    fetch("SessionCheckServlet", { method: "GET", credentials: "include" })
+        .then(res => res.json())
+        .then(data => {
+        	  if (!data.user) {
+             
+                  window.location.href = "login.html";
+                  return;
+              }
+ 
+            document.documentElement.style.visibility = 'visible';
+        })
+        .catch(err => {
+            window.location.href = "login.html";
+        });
+});
+</script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Profile - JobBoard</title>
+  
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="css/custom-bs.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="fonts/icomoon/style.css">
+  
+  <style>
+    .profile-header {
+      background: linear-gradient(135deg, #28a745);
+      color: white;
+      padding: 2rem 0;
+    }
+    .profile-avatar {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      border: 4px solid white;
+      background: #f8f9fa;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      color: #6c757d;
+      margin: 0 auto;
+    }
+    .profile-card {
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .form-group label {
+      font-weight: 600;
+      color: #495057;
+    }
+    .form-control:disabled {
+      background-color: #f8f9fa;
+      border-color: #dee2e6;
+    }
+    .edit-mode {
+      background-color: #fff3cd !important;
+      border-color: #ffc107 !important;
+    }
+    .profile-stats {
+      background: #f8f9fa;
+      padding: 1.5rem;
+      border-radius: 10px;
+    }
+    .stat-item {
+      text-align: center;
+      padding: 1rem;
+    }
+    .stat-number {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #007bff;
+    }
+    .stat-label {
+      color: #6c757d;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container-fluid">
+    
+    <!-- Profile Header -->
+    <div class="profile-header">
+      <div class="container">
+        <div class="row align-items-center">
+          <div class="col-md-3 text-center">
+            <div class="profile-avatar" id="profileAvatar">
+              <i class="icon-user"></i>
+            </div>
+          </div>
+          <div class="col-md-9">
+            <h2 id="profileDisplayName">Loading...</h2>
+            <p class="mb-2" id="profileDisplayEmail">Loading...</p>
+            <p class="mb-0">
+              <i class="icon-calendar mr-2"></i>Member since <span id="memberSince">2024</span>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  
+    <div class="container mt-4">
+      
+      <!-- Back Button -->
+      <div class="row mb-4">
+        <div class="col-12">
+          <button onclick="history.back()" class="btn btn-outline-secondary">
+            <i class="icon-arrow-left mr-2"></i>Back to Dashboard
+          </button>
+        </div>
+      </div>
+
+      <div class="row">
+        
+        <!-- Profile Form -->
+        <div class="col-lg-8">
+          <div class="card profile-card">
+            <div class="card-header bg-white">
+              <div class="d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">
+                  <i class="icon-user mr-2"></i>Profile Information
+                </h5>
+                <button type="button" class="btn btn-outline-primary btn-sm" id="editToggleBtn" onclick="toggleEditMode()">
+                  <i class="icon-edit mr-1"></i>Edit Profile
+                </button>
+              </div>
+            </div>
+            
+            <div class="card-body">
+              <form id="profileForm" enctype="multipart/form-data">
+                
+                <!-- Personal Information -->
+                <h6 class="text-primary mb-3">
+                  <i class="icon-user mr-2"></i>Personal Details
+                </h6>
+                
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="name">
+                        <i class="icon-user mr-1"></i>Full Name
+                      </label>
+                      <input type="text" id="name" class="form-control" disabled>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="email">
+                        <i class="icon-envelope mr-1"></i>Email Address
+                      </label>
+                      <input type="email" id="email" class="form-control" disabled>
+                     
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="phone">
+                        <i class="icon-phone mr-1"></i>Mobile Number
+                        <span class="text-danger">*</span>
+                      </label>
+                      <input type="tel" id="phone" name="phone" class="form-control" disabled required>
+                      <div class="invalid-feedback">Please enter a valid mobile number</div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="skills">
+                        <i class="icon-code mr-1"></i>Skills
+                        <span class="text-danger">*</span>
+                      </label>
+                      <input type="text" id="skills" name="skills" class="form-control" disabled 
+                             placeholder="e.g. Java, JavaScript, Python, SQL">
+               
+                    </div>
+                  </div>
+                </div>
+
+            
+                <hr>
+                <h6 class="text-primary mb-3">
+                  <i class="icon-document mr-2"></i>Resume
+                </h6>
+                
+                <div class="row">
+                  <div class="col-md-8">
+                    <div class="form-group">
+                      <label for="resume">
+                        <i class="icon-upload mr-1"></i>Upload New Resume
+                      </label>
+                      <input type="file" id="resume" name="resume" class="form-control" 
+                             accept=".pdf,.doc,.docx" disabled>
+                      <small class="text-muted">Accepted formats: PDF, DOC, DOCX (Max: 5MB)</small>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="text-center mt-4" id="currentResume">
+                      <i class="icon-document-text text-muted" style="font-size: 3rem;"></i>
+              
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="form-group mt-4" id="actionButtons" style="display: none;">
+                  <button type="submit" class="btn btn-success mr-3">
+                    <i class="icon-check mr-2"></i>Save Changes
+                  </button>
+                  <button type="button" class="btn btn-secondary" onclick="cancelEdit()">
+                    <i class="icon-x mr-2"></i>Cancel
+                  </button>
+                </div>
+
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <!-- Profile Statistics -->
+        <div class="col-lg-4">
+          <div class="card profile-card">
+            <div class="card-header bg-white">
+              <h5 class="mb-0">
+                <i class="icon-bar-chart mr-2"></i>My Statistics
+              </h5>
+            </div>
+            <div class="card-body">
+              <div class="profile-stats">
+                <div class="row">
+                  <div class="col-6">
+                    <div class="stat-item">
+                      <div class="stat-number" id="totalApplications">0</div>
+                      <div class="stat-label">Applications</div>
+                    </div>
+                  </div>
+                  <div class="col-6">
+                    <div class="stat-item">
+                      <div class="stat-number" id="pendingApplications">0</div>
+                      <div class="stat-label">Pending</div>
+                    </div>
+                  </div>
+                  <div class="col-6">
+                    <div class="stat-item">
+                      <div class="stat-number text-success" id="selectedApplications">0</div>
+                      <div class="stat-label">Selected</div>
+                    </div>
+                  </div>
+                  <div class="col-6">
+                    <div class="stat-item">
+                      <div class="stat-number text-info" id="profileViews">0</div>
+                      <div class="stat-label">Profile Views</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+      
+          <div class="card profile-card mt-4">
+            <div class="card-header bg-white">
+              <h5 class="mb-0">
+                <i class="icon-zap mr-2"></i>Quick Actions
+              </h5>
+            </div>
+            <div class="card-body">
+              <a href="UserDashboard.html" class="btn btn-outline-primary btn-block mb-2">
+                <i class="icon-home mr-2"></i>Dashboard
+              </a>
+             
+              <a href="my-applications.html" class="btn btn-outline-success btn-block">
+                <i class="icon-file-text mr-2"></i>My Applications
+              </a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  
+    <div id="messageContainer"></div>
+
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+ <script>
+    let isEditMode = false;
+    let originalData = {};
+
+
+    window.onload = function() {
+        loadProfileData();
+    };
+
+    function loadProfileData() {
+        fetch("/JOB_APPLICATION_SYSTEM/UserProfileServlet",
+		{ credentials: "include" })
+            .then(response => response.json())
+            .then(data => {
+                if (!data.loggedIn) {
+                    showMessage("Please login again.", "danger");
+                    setTimeout(() => {
+                        location.href = "login.html";
+                    }, 2000);
+                    return;
+                }
+
+               
+                originalData = { ...data };
+
+              
+                updateProfileDisplay(data);
+                
+            
+                document.getElementById("name").value = data.fullName || "";
+                document.getElementById("email").value = data.email || "";
+                document.getElementById("phone").value = data.phone || "";
+                document.getElementById("skills").value = data.skills || "";
+
+               
+                updateProfileAvatar(data.fullName);
+
+           
+                loadUserStatistics();
+            })
+            .catch(error => {
+                console.error('Error loading profile:', error);
+                showMessage("Error loading profile data", "danger");
+            });
+    }
+
+    function updateProfileDisplay(data) {
+        document.getElementById("profileDisplayName").textContent = data.fullName || "User";
+        document.getElementById("profileDisplayEmail").textContent = data.email || "";
+        document.getElementById("memberSince").textContent = data.memberSince || new Date().getFullYear();
+    }
+
+    function updateProfileAvatar(fullName) {
+        const avatar = document.getElementById("profileAvatar");
+        if (fullName) {
+            const initials = fullName.split(' ').map(n => n[0]).join('').toUpperCase();
+            avatar.innerHTML = initials;
+        }
+    }
+
+ 
+    function loadUserStatistics() {
+        fetch("/JOB_APPLICATION_SYSTEM/UserStatsServlet", 
+        		{ credentials: "include" })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    console.error('Stats error:', data.error);
+                    return;
+                }
+                
+               
+                document.getElementById("totalApplications").textContent = data.totalApplications || 0;
+                document.getElementById("pendingApplications").textContent = data.pendingApplications || 0;
+                document.getElementById("selectedApplications").textContent = data.selectedApplications || 0;
+                document.getElementById("profileViews").textContent = data.scheduledInterviews || 0;
+            })
+            .catch(error => {
+                console.error('Error loading user stats:', error);
+             
+                document.getElementById("totalApplications").textContent = "0";
+                document.getElementById("pendingApplications").textContent = "0";
+                document.getElementById("selectedApplications").textContent = "0";
+                document.getElementById("profileViews").textContent = "0";
+            });
+    }
+
+    function toggleEditMode() {
+        isEditMode = !isEditMode;
+        const phoneField = document.getElementById("phone");
+        const skillsField = document.getElementById("skills");
+        const resumeField = document.getElementById("resume");
+        const editBtn = document.getElementById("editToggleBtn");
+        const actionButtons = document.getElementById("actionButtons");
+
+        if (isEditMode) {
+         
+            phoneField.disabled = false;
+            skillsField.disabled = false;
+            resumeField.disabled = false;
+            
+           
+            phoneField.classList.add("edit-mode");
+            skillsField.classList.add("edit-mode");
+            resumeField.classList.add("edit-mode");
+            
+        
+            editBtn.innerHTML = '<i class="icon-x mr-1"></i>Cancel Edit';
+            editBtn.className = 'btn btn-outline-danger btn-sm';
+            
+     
+            actionButtons.style.display = 'block';
+            
+            showMessage("You can now edit your mobile number, skills, and resume.", "info");
+        } else {
+            cancelEdit();
+        }
+    }
+
+    function cancelEdit() {
+      
+        document.getElementById("phone").value = originalData.phone || "";
+        document.getElementById("skills").value = originalData.skills || "";
+        document.getElementById("resume").value = "";
+        
+     
+        disableEditMode();
+        
+        showMessage("Changes cancelled", "info");
+    }
+
+    function disableEditMode() {
+        const phoneField = document.getElementById("phone");
+        const skillsField = document.getElementById("skills");
+        const resumeField = document.getElementById("resume");
+        const editBtn = document.getElementById("editToggleBtn");
+        const actionButtons = document.getElementById("actionButtons");
+
+        phoneField.disabled = true;
+        skillsField.disabled = true;
+        resumeField.disabled = true;
+        
+        phoneField.classList.remove("edit-mode");
+        skillsField.classList.remove("edit-mode");
+        resumeField.classList.remove("edit-mode");
+        
+        editBtn.innerHTML = '<i class="icon-edit mr-1"></i>Edit Profile';
+        editBtn.className = 'btn btn-outline-primary btn-sm';
+        
+        actionButtons.style.display = 'none';
+        isEditMode = false;
+    }
+
+    document.getElementById("profileForm").onsubmit = function(e) {
+        e.preventDefault();
+        
+        if (!validateForm()) {
+            return;
+        }
+        
+        showMessage("Updating profile...", "info");
+        
+        let formData = new FormData();
+        
+     
+        const phone = document.getElementById("phone").value.trim();
+        const skills = document.getElementById("skills").value.trim();
+        const resumeFile = document.getElementById("resume").files[0];
+        
+        formData.append("phone", phone);
+        formData.append("skills", skills);
+        
+        if (resumeFile) {
+            formData.append("resume", resumeFile);
+        }
+        
+        fetch("/JOB_APPLICATION_SYSTEM/UserProfileUpdateServlet", {
+            method: "POST",
+            body: formData,
+            credentials: "include"
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.ok) {
+                showMessage(data.msg || "Profile updated successfully!", "success");
+                
+             
+                originalData.phone = phone;
+                originalData.skills = skills;
+                
+               
+                disableEditMode();
+                
+              
+                setTimeout(() => {
+                    loadProfileData();
+                }, 1000);
+            } else {
+                showMessage(data.msg || "Failed to update profile. Please try again.", "danger");
+            }
+        })
+        .catch(error => {
+            console.error('Error updating profile:', error);
+            showMessage("Error updating profile. Please try again.", "danger");
+        });
+    };
+
+    function validateForm() {
+        const phone = document.getElementById("phone").value.trim();
+        const skills = document.getElementById("skills").value.trim();
+        
+        if (!phone) {
+            showMessage("Mobile number is required", "warning");
+            document.getElementById("phone").focus();
+            return false;
+        }
+        
+ 
+        const phoneDigits = phone.replace(/[^0-9]/g, '');
+        if (phoneDigits.length !== 10 || !phoneDigits.match(/^[6-9][0-9]{9}$/)) {
+            showMessage("Please enter a valid 10-digit mobile number starting with 6-9", "warning");
+            document.getElementById("phone").focus();
+            return false;
+        }
+        
+        if (!skills) {
+            showMessage("Please enter your skills", "warning");
+            document.getElementById("skills").focus();
+            return false;
+        }
+        
+        return true;
+    }
+
+    function showMessage(message, type) {
+        const container = document.getElementById("messageContainer");
+        const alertClass = type === 'danger' ? 'alert-danger' : 
+                          type === 'success' ? 'alert-success' :
+                          type === 'warning' ? 'alert-warning' : 'alert-info';
+        
+        container.innerHTML = `
+            <div class="alert ${alertClass} alert-dismissible fade show position-fixed" 
+                 style="top: 20px; right: 20px; z-index: 1050; min-width: 300px;">
+                ${message}
+                <button type="button" class="close" data-dismiss="alert">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        `;
+        
+     
+        setTimeout(() => {
+            $('.alert').fadeOut();
+        }, 5000);
+    }
+
+  
+    document.getElementById("phone").addEventListener('input', function(e) {
+ 
+        let value = e.target.value.replace(/[^0-9]/g, '');
+        if (value.length > 10) {
+            value = value.substring(0, 10);
+        }
+        e.target.value = value;
+    });
+
+ 
+    document.getElementById("skills").addEventListener('input', function(e) {
+    
+        let value = e.target.value;
+      
+        value = value.replace(/\s*,\s*/g, ', ').replace(/\s+/g, ' ');
+        e.target.value = value;
+    });
+    
+    
+</script>
+</body>
+</html>

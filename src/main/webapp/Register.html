@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>User Registration | JobBoard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="css/custom-bs.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="fonts/icomoon/style.css">
+  <link rel="stylesheet" href="fonts/line-icons/style.css">
+  <link rel="stylesheet" href="css/animate.min.css">
+  <link rel="stylesheet" href="css/bootstrap-select.min.css">
+  <link rel="stylesheet" href="css/jquery.fancybox.min.css">
+  <link rel="stylesheet" href="css/owl.carousel.min.css">
+  <link rel="stylesheet" href="css/quill.snow.css">
+    <!-- Tailwind CSS -->
+   <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- jQuery -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+  <!-- SweetAlert2 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <!-- MultiSelect Plugin -->
+  <link rel="stylesheet" href="plugin/jQuery-MultiSelect-master/jquery.multiselect.css">
+  <script src="plugin/jQuery-MultiSelect-master/jquery.multiselect.js"></script>
+  <script src="js/form-protection.js"></script>
+  
+  <link rel="stylesheet" href="css/style.css">
+  
+
+<style>
+  body {
+    background-image: url('images/hero_1.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    min-height: 100vh;
+    padding-top: 80px; /* space for header */
+  }
+  .register-box {
+    background: #fff;
+    border-radius: 10px;
+    padding: 30px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    max-width: 500px;
+    margin: 60px auto;
+  }
+  label span { color: red; }
+  small.text-red { color: red; display: none; }
+
+  header.site-navbar {
+    background: rgba(45, 55, 72, 0.7); /* semi-transparent dark */
+    color: #fff;
+    border-bottom: none;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 100;
+    height: 80px;
+    display: flex;
+    align-items: center;
+  }
+  header.site-navbar .site-logo a {
+    color: #fff !important;
+    font-weight: bold;
+    font-size: 2rem;
+    letter-spacing: 2px;
+  }
+  header.site-navbar nav a {
+    color: #fff !important;
+    font-weight: 500;
+    font-size: 1.1rem;
+    margin-left: 30px;
+    transition: color 0.2s;
+  }
+  header.site-navbar nav a:hover {
+    color: #89ba16 !important;
+  }
+  .site-navbar .container-fluid {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 80px;
+  }
+</style>
+
+<header class="site-navbar">
+  <div class="container-fluid">
+    <div class="site-logo col-6"><a href="index.html">JOBBOARD</a></div>
+    <nav class="mx-auto site-navigation">
+      <ul class="site-menu js-clone-nav ml-0 pl-0" style="display:flex;list-style:none;margin:0;">
+        <li><a href="index.html" class="nav-link">Home</a></li>
+        <li><a href="about.html" class="nav-link">About</a></li>
+        <li><a href="contact.html" class="nav-link">Contact</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+  <!-- Registration Form -->
+  <div class="register-box">
+    <h2 class="text-center text-primary mb-4">User Registration</h2>
+    <form id="registerForm" action="register"  method="post" enctype="multipart/form-data">
+       
+        <label class="block font-medium text-gray-700">name<span class="text-red-500">*</span></label>
+        <input type="text" id="full_name" name="full_name"  class="border border-gray-300 rounded-lg w-full p-2 focus:outline-blue-500" maxlength="100" placeholder="Enter your name">
+        <small class="text-red-500 hidden" id="nameError"></small>
+
+        
+        <label class="block font-medium text-gray-700 mt-3">Email <span class="text-red-500">*</span></label>
+        <input type="email" id="email" name="email" class="border border-gray-300 rounded-lg w-full p-2 focus:outline-blue-500" placeholder="Enter your email">
+        <small class="text-red-500 hidden" id="emailError"></small>
+
+       
+        <label class="block font-medium text-gray-700 mt-3">Password <span class="text-red-500">*</span></label>
+        <input type="password" id="password" name="password" class="border border-gray-300 rounded-lg w-full p-2 focus:outline-blue-500" placeholder="Enter password">
+        <small class="text-red-500 hidden" id="passwordError"></small>
+
+       
+        <label class="block font-medium text-gray-700 mt-3">Phone <span class="text-red-500">*</span></label>
+        <input type="text" id="phone" name="phone" maxlength="10" class="border border-gray-300 rounded-lg w-full p-2 focus:outline-blue-500" placeholder="Enter phone number">
+        <small class="text-red-500 hidden" id="phoneError"></small>
+
+       
+        <label class="block font-medium text-gray-700 mt-3">Gender</label>
+        <select id="gender" name="gender" class="border border-gray-300 rounded-lg w-full p-2 focus:outline-blue-500">
+          <option value="">Select Gender</option>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+          <option value="Other">Other</option>
+        </select>
+
+        <!-- Qualification -->
+        <label class="block font-medium text-gray-700 mt-3">Qualification</label>
+        <input type="text" id="qualification" name="qualification" class="border border-gray-300 rounded-lg w-full p-2 focus:outline-blue-500" placeholder="Qualification">
+
+        <!-- Skills -->
+        <label class="block font-medium text-gray-700 mt-3">Skills <span class="text-red-500">*</span></label>
+        <select id="skills" name="skills[]" multiple class="border border-gray-300 rounded-lg w-full p-2">
+          <option value="Java">Java</option>
+          <option value="Python">Python</option>
+          <option value="HTML">HTML</option>
+          <option value="CSS">CSS</option>
+          <option value="JavaScript">JavaScript</option>
+          <option value="SQL">SQL</option>
+        </select>
+        <small class="text-red-500 hidden" id="skillsError"></small>
+
+        <!-- Resume -->
+        <label class="block font-medium text-gray-700 mt-3">Resume <span class="text-red-500">*</span></label>
+        <input type="file" id="resume" name="resume" accept=".pdf,.doc,.docx" class="border border-gray-300 rounded-lg w-full p-2 focus:outline-blue-500">
+        <small class="text-red-500 hidden" id="resumeError"></small>
+
+        <button type="submit" class="w-full mt-5 bg-blue-600 text-white font-semibold py-2 rounded-lg hover:bg-blue-700">Register</button>
+      </form>
+
+      <p class="text-center text-sm mt-3">Already have an account? <a href="login.html" class="text-blue-600 hover:underline">Login</a></p>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <a href="#top" class="smoothscroll scroll-top">
+      <span class="icon-keyboard_arrow_up"></span>
+    </a>
+    <div class="container">
+      <div class="row mb-5">
+        <!-- ...footer columns as in your login.html... -->
+      </div>
+      <div class="row text-center">
+        <div class="col-12">
+          <p class="copyright"><small>
+            Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="icon-heart text-danger" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank" >Colorlib</a>
+          </small></p>
+        </div>
+      </div>
+    </div>
+  </footer>
+</div>
+
+
+
+
+  
+ <script>
+  
+  
+    $(document).ready(function () {
+    
+      $('#skills').multiselect({
+        columns: 1,
+        placeholder: 'Select your skills',
+        search: true,
+        selectAll: false
+      });
+
+      
+
+  
+$("#full_name").on("input", function () {
+    const name = $(this).val().trim();
+  
+    if (name === "") {
+  
+      $("#nameError").removeClass("hidden").text("Name should not be empty.");
+  
+    } else if (!/^[A-Za-z\s]{1,100}$/.test(name)) {
+  
+      $("#nameError").removeClass("hidden").text("Invalid input — numbers & special characters not allowed.");
+  
+    } else {
+  
+      $("#nameError").addClass("hidden");
+  
+    }
+  
+  });
+  
+ 
+  
+
+  
+  $("#email").on("input", function () {
+  
+    const email = $(this).val();
+  
+    const valid = /^[a-zA-Z0-9._%+-]{2,}@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email);
+  
+    if (email === "") {
+  
+      $("#emailError").removeClass("hidden").text("Email should not be empty.");
+  
+    } else if (!valid) {
+  
+      $("#emailError").removeClass("hidden").text("Invalid email format (must include @ and domain).");
+  
+    } else {
+  
+      $("#emailError").addClass("hidden");
+  
+    }
+  
+  });
+  
+ 
+  
+
+  
+  $("#password").on("input", function () {
+  
+    const password = $(this).val();
+  
+    const valid = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{6,}$/.test(password);
+  
+    if (password === "") {
+  
+      $("#passwordError").removeClass("hidden").text("Password should not be empty.");
+  
+    } else if (!valid) {
+  
+      $("#passwordError").removeClass("hidden").text("Password ≥6 chars, 1 uppercase, 1 lowercase & 1 special character.");
+  
+    } else {
+  
+      $("#passwordError").addClass("hidden");
+  
+    }
+  
+  });
+  
+ 
+  
+
+  
+  $("#phone").on("input", function () {
+  
+    let phone = $(this).val().replace(/\D/g, "");
+  
+    if (phone.length > 10) phone = phone.slice(0, 10);
+  
+    $(this).val(phone);
+  
+ 
+  
+    if (phone === "") {
+  
+      $("#phoneError").removeClass("hidden").text("Phone should not be empty.");
+  
+    } else if (phone.length < 10) {
+  
+      $("#phoneError").removeClass("hidden").text("Phone must be 10 digits.");
+  
+    } else {
+  
+      $("#phoneError").addClass("hidden");
+  
+    }
+  
+  });
+  
+ 
+  
+
+  
+  $("#registerForm").on("submit", function (e) {
+  
+    e.preventDefault();
+  
+    let valid = true;
+  
+ 
+  
+
+  
+    const nameVal = $("#full_name").val().trim();
+  
+    if (nameVal === "" || !/^[A-Za-z\s]{1,100}$/.test(nameVal)) {
+  
+      valid = false;
+  
+      $("#nameError").removeClass("hidden").text(nameVal === "" ? "Name should not be empty." : "Invalid input — numbers & special characters not allowed.");
+  
+    }
+  
+ 
+  
+
+  
+    const emailVal = $("#email").val().trim();
+  
+    const emailValid = /^[a-zA-Z0-9._%+-]{2,}@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(emailVal);
+  
+    if (emailVal === "" || !emailValid) {
+  
+      valid = false;
+  
+      $("#emailError").removeClass("hidden").text(emailVal === "" ? "Email should not be empty." : "Invalid email format.");
+  
+    }
+  
+ 
+  
+
+  
+    const passwordVal = $("#password").val();
+  
+    const passwordValid = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{6,}$/.test(passwordVal);
+  
+    if (passwordVal === "" || !passwordValid) {
+  
+      valid = false;
+  
+      $("#passwordError").removeClass("hidden").text(passwordVal === "" ? "Password should not be empty." : "Password ≥6 chars, 1 uppercase, 1 lowercase & 1 special char.");
+  
+    }
+
+    const phoneVal = $("#phone").val();
+  
+    if (phoneVal === "" || phoneVal.length !== 10) {
+  
+      valid = false;
+  
+      $("#phoneError").removeClass("hidden").text(phoneVal === "" ? "Phone should not be empty." : "Phone must be 10 digits.");
+  
+    }
+  
+
+  
+    const skillsSelected = $("#skills option:selected").length;
+  
+  if (skillsSelected < 2) {
+  
+    valid = false;
+  
+    $("#skillsError").removeClass("hidden").text("Select at least 2 skills.");
+  
+  } else {
+  
+    $("#skillsError").addClass("hidden");
+  
+  }
+
+    const resumeFile = $("#resume")[0].files[0];
+  
+    if (!resumeFile) {
+  
+      valid = false;
+  
+      $("#resumeError").removeClass("hidden").text("Please upload your resume.");
+  
+    } else {
+  
+      const allowedExt = ["pdf","doc","docx"];
+  
+      const ext = resumeFile.name.split(".").pop().toLowerCase();
+  
+      if (!allowedExt.includes(ext)) {
+  
+        valid = false;
+  
+        $("#resumeError").removeClass("hidden").text("Allowed formats: PDF, DOC, DOCX only.");
+  
+      } else {
+  
+        $("#resumeError").addClass("hidden");
+  
+      }
+  
+    }
+   
+    
+    if (valid) {
+    	
+    	  const formData = new FormData(this);
+    	  
+    	
+          $.ajax({
+              url: 'register',
+              type: 'POST',
+              data: formData,
+              processData: false,
+              contentType: false,
+              success: function(response) {
+                  if (response.trim() === "success") {
+                      Swal.fire({
+                          icon: 'success',
+                          title: 'Success!',
+                          text: 'Registration successful! Redirecting to login page...',
+                          confirmButtonColor: '#28a745',
+                          timer: 2000,
+                          timerProgressBar: true
+                      }).then(() => {
+                          $("#registerForm")[0].reset();
+                          $("small").addClass("hidden");
+                          $("#skills").multiselect('reset');
+                          window.location.href = "login.html";
+                      });
+    	    		  } else {
+    	  		      Swal.fire({
+                          icon: 'error',
+                          title: 'Registration Failed',
+                          text: response,
+                          confirmButtonColor: '#28a745'
+                      });
+    	      }
+    	    },
+    	    error: function() {
+    	      Swal.fire({
+                  icon: 'error',
+                  title: 'Error',
+                  text: 'Error occurred! Try again.',
+                  confirmButtonColor: '#28a745'
+              });
+    	    }
+    	  });
+    	}
+
+     });
+    });
+  </script>
+  
+</body>
+</html>

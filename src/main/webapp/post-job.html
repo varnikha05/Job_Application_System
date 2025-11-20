@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Post Job  JobBoard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="css/custom-bs.css">
+    <link rel="stylesheet" href="css/jquery.fancybox.min.css">
+    <link rel="stylesheet" href="css/bootstrap-select.min.css">
+    <link rel="stylesheet" href="fonts/icomoon/style.css">
+    <link rel="stylesheet" href="fonts/line-icons/style.css">
+    <link rel="stylesheet" href="css/owl.carousel.min.css">
+    <link rel="stylesheet" href="css/animate.min.css">
+    <link rel="stylesheet" href="css/quill.snow.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="plugin/jQuery-MultiSelect-master/jquery.multiselect.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            min-height: 100vh;
+        }
+        .recruiter-navbar {
+            background: linear-gradient(135deg, #89ba16 0%, #6fa013 100%);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            padding: 0.25rem 0;
+            min-height: 64px;
+        }
+        .site-navbar-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1.5rem;
+            padding: 0 2.5rem;
+            width: 100%;
+        }
+        .recruiter-navbar .site-logo {
+            flex-shrink: 0;
+        }
+        .recruiter-navbar .site-navigation {
+            flex: 1 1 auto;
+        }
+        .recruiter-menu-list {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            justify-content: center;
+        }
+        .recruiter-nav-link {
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 600;
+            letter-spacing: 0.03rem;
+            text-decoration: none;
+            padding: 0.75rem 0;
+            transition: color 0.2s ease;
+        }
+        .recruiter-nav-link:hover,
+        .recruiter-nav-link.active {
+            color: #0b0b0b;
+        }
+        .recruiter-profile-toggle {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.6rem 1.1rem;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 999px;
+            color: rgba(255, 255, 255, 0.95);
+            font-weight: 600;
+            text-decoration: none;
+        }
+        .recruiter-profile-toggle:hover {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.1);
+        }
+        .recruiter-actions {
+            flex-shrink: 0;
+            margin-left: auto;
+        }
+        .hero-banner {
+            position: relative;
+            background-image: url('images/hero_1.jpg');
+            background-size: cover;
+            background-position: center;
+            padding: 4rem 0;
+            color: #fff;
+        }
+        .hero-overlay {
+            background: rgba(0, 0, 0, 0.55);
+            padding: 4rem 0;
+        }
+        .form-wrapper {
+            margin-top: -4rem;
+            margin-bottom: 4rem;
+        }
+        .post-job-card {
+            border: none;
+            border-radius: 18px;
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+        }
+        .post-job-card .card-header {
+            background: linear-gradient(135deg, #89ba16 0%, #6fa013 100%);
+            color: white;
+            border: none;
+            padding: 1.5rem;
+        }
+        .post-job-card .card-body {
+            padding: 2rem 2.5rem;
+            background: #fff;
+        }
+        .job-description-group {
+            margin-bottom: 1.75rem;
+        }
+        .quill-editor {
+            border: 1px solid #e9ecef;
+            border-radius: 10px;
+            margin-top: 0.35rem;
+            margin-bottom: 0.75rem;
+        }
+        .quill-editor .ql-toolbar {
+            border-radius: 10px 10px 0 0;
+        }
+        .quill-editor .ql-container {
+            border-radius: 0 0 10px 10px;
+            min-height: 200px;
+        }
+        .form-label {
+            font-weight: 600;
+            color: #495057;
+        }
+        .form-control,
+        .form-select {
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 0.75rem 1rem;
+            transition: all 0.2s ease;
+            background-color: #fff;
+        }
+        .form-control:focus,
+        .form-select:focus {
+            border-color: #89ba16;
+            box-shadow: 0 0 0 0.2rem rgba(137, 186, 22, 0.2);
+        }
+        .btn-success {
+            background: linear-gradient(135deg, #89ba16 0%, #6fa013 100%);
+            border: none;
+            font-weight: 600;
+            padding: 0.75rem 2rem;
+        }
+        .btn-success:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(137, 186, 22, 0.3);
+        }
+        .breadcrumb-light a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+        }
+        .breadcrumb-light a:hover {
+            color: rgba(255, 255, 255, 1);
+        }
+        .alert-placeholder {
+            min-height: 48px;
+        }
+        @media (max-width: 991.98px) {
+            .site-navbar-inner {
+                flex-wrap: wrap;
+                padding: 0 1rem;
+            }
+            .recruiter-menu-list {
+                flex-wrap: wrap;
+                justify-content: flex-start;
+            }
+            .post-job-card .card-body {
+                padding: 1.5rem;
+            }
+        }
+        @media (min-width: 1200px) {
+            .recruiter-navbar .site-navigation {
+                display: flex !important;
+                justify-content: center;
+            }
+        }
+        .ms-options-wrap {
+            width: 100%;
+            margin-top: 0.35rem;
+        }
+        .ms-options-wrap > button {
+            width: 100%;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 0.65rem 1rem;
+            background: #fff;
+            color: #495057;
+            text-align: left;
+            font-weight: 500;
+            line-height: 1.35;
+        }
+        .ms-options-wrap > button:focus {
+            border-color: #89ba16;
+            box-shadow: 0 0 0 0.2rem rgba(137, 186, 22, 0.2);
+        }
+        .ms-options-wrap .ms-options {
+            width: 100%;
+            border-radius: 10px;
+        }
+        .ms-options-wrap .ms-search input {
+            border-radius: 6px;
+        }
+  
+    body {
+      font-family: 'Nunito', sans-serif;
+      background-color: #f8f9fa;
+      color: #333;
+    }
+    .job-card {
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+      padding: 20px;
+      margin-bottom: 20px;
+      transition: all 0.3s ease;
+    }
+    .job-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+    }
+    .job-card h4 {
+      font-weight: 700;
+      color: #000;
+    }
+    .job-card .job-location {
+      color: #777;
+      font-size: 0.9rem;
+    }
+    .job-type {
+      display: inline-block;
+      background: #89ba16;
+      color: #fff;
+      border-radius: 20px;
+      padding: 5px 12px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+    .edit-btn {
+      background: #007bff;
+      color: #fff;
+      padding: 6px 12px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .edit-btn:hover {
+      background: #0056b3;
+      color: #fff;
+    }
+    .page-title {
+      font-weight: 700;
+      color: #222;
+      text-align: center;
+      margin-bottom: 40px;
+    }
+  </style>
+</head>
+ 
+<body>
+ <div class="site-wrap">
+    <div class="site-mobile-menu site-navbar-target">
+      <div class="site-mobile-menu-header">
+        <div class="site-mobile-menu-close mt-3">
+          <span class="icon-close2 js-menu-toggle"></span>
+        </div>
+      </div>
+      <div class="site-mobile-menu-body"></div>
+    </div>
+  <!-- Navbar (reuse your recruiter navbar) -->
+  <header >
+<section class="section-hero overlay inner-page bg-image" style="background-image: url('images/hero_1.jpg');" id="home-section">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-7">
+            <h1 class="text-white font-weight-bold">Recruiter Dashboard</h1>
+            
+            <div class="custom-breadcrumbs">
+              <a href="#">Home</a> <span class="mx-2 slash">/</span>
+              <a href="recruiter_dashboard.html">Recruiter</a> <span class="mx-2 slash">/</span>
+              <span class="text-white"><strong>Post Job</strong></span>
+            </div>
+          </div>
+      </div>
+    </div>
+  </header>
+   
+ 
+      <br>
+      <br>
+        </section>
+        <main class="form-wrapper">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-xl-7 col-lg-8">
+                        <div id="messageBox" class="alert-placeholder mb-3"></div>
+                        <div class="card post-job-card">
+                            <div class="card-header">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <div>
+                                        <h2 class="h4 mb-1">Job Details</h2>
+                                        <p class="mb-0">Share the role highlights to attract the right talent.</p>
+                                    </div>
+                                    <span class="badge bg-dark text-uppercase">Recruiter</span>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <form id="jobForm" action="PostJobServlet" method="post">
+                                    <div class="row g-3 g-md-4">
+                                      <div class="col-12 pt-3">
+                                            <h3 class="h5 fw-semibold mb-3">Company Details</h3>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="company_name" class="form-label">Company Name</label>
+                                            <input type="text" class="form-control" id="company_name" name="company_name" maxlength="255" placeholder="e.g., JobBoard Technologies">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="company_website" class="form-label">Company Website</label>
+                                            <input type="url" class="form-control" id="company_website" name="company_website" maxlength="255" placeholder="https://www.example.com">
+                                        </div>
+                                        <div class="col-12">
+                                            <label for="company_description" class="form-label">Company Description</label>
+                                            <textarea class="form-control" id="company_description" name="company_description" rows="4" maxlength="2000" placeholder="Share a brief overview of your company and culture."></textarea>
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <div class="row g-3 g-md-4"> 
+                                        <div class="col-md-6">
+                                            <label for="title" class="form-label">Job Title <span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control" id="title" name="title" maxlength="255" required placeholder="e.g., Senior Java Developer">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="location" class="form-label">Location <span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control" id="location" name="location" maxlength="100" required placeholder="City, Country">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="experience" class="form-label">Experience</label>
+                                            <select class="form-select" id="experience" name="experience">
+                                                <option value="">Select experience</option>
+                                                <option value="Fresher">Fresher</option>
+                                                <option value="1-2 years">1-2 years</option>
+                                                <option value="3-5 years">3-5 years</option>
+                                                <option value="5-8 years">5-8 years</option>
+                                                <option value="8+ years">8+ years</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="salary" class="form-label">Salary Range</label>
+                                            <input type="text" class="form-control" id="salary" name="salary" maxlength="100" placeholder="e.g., 5-7 LPA">
+                                        </div>
+                                        <div class="col-md-6">
+                                     
+                                            <label for="jobType" class="form-label">Job Type</label>
+                                          <select id="jobType" name="jobType" class="form-select" multiple>
+
+
+                                                <option value="Full Time">Full Time</option>
+                                                <option value="Part Time">Part Time</option>
+                                                <option value="Contract">Contract</option>
+                                                <option value="Internship">Internship</option>
+                                                <option value="Temporary">Temporary</option>
+                                                <option value="Remote">Remote</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="skills" class="form-label">Key Skills</label>
+                                            <select id="skills"   name="skills" class="form-select" multiple>
+                                                <option value="Java">Java</option>
+                                                <option value="Spring Boot">Spring Boot</option>
+                                                <option value="REST APIs">REST APIs</option>
+                                                <option value="SQL">SQL</option>
+                                                <option value="Angular">Angular</option>
+                                                <option value="React">React</option>
+                                                <option value="AWS">AWS</option>
+                                                <option value="Docker">Docker</option>
+                                                <option value="Microservices">MSSQL</option>
+                                                <option value="Python">Python</option>
+                                            </select>
+                                        </div>
+                                         </div>
+                                           
+               <div class="form-group">
+                <label  class="form-label">Job Description</label>
+                <div  id="jobDescriptionEditor" class="quill-editor">
+                  <p>Write Job Description!</p>
+                </div>
+                <input type="hidden" name="status" value="Active">
+                <input type="hidden" id="description" name="description">
+              </div>
+              
+                                        <div class="col-md-6">
+                                            <label for="closing_date" class="form-label">Application Deadline</label>
+                                            <input type="date" class="form-control" id="closing_date" name="closing_date">
+                                        </div>
+                                      
+                                    <div class="d-flex justify-content-between align-items-center mt-4">
+                                        <a id="cancelBtn" href="#" class="btn btn-outline-secondary px-4">Cancel</a>
+                                        <button id="submitBtn" type="submit" class="btn btn-success px-4">Post Job</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <footer class="site-footer">
+            <a href="#top" class="smoothscroll scroll-top"><span class="icon-keyboard_arrow_up"></span></a>
+            <div class="container">
+                <div class="row text-center">
+                    <div class="col-12">
+                        <p class="copyright mb-0"><small>&copy;<script>document.write(new Date().getFullYear());</script> JobBoard. All rights reserved.</small></p>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+    
+     <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="js/isotope.pkgd.min.js"></script>
+    <script src="js/stickyfill.min.js"></script>
+    <script src="js/jquery.fancybox.min.js"></script>
+    <script src="js/jquery.easing.1.3.js"></script>
+    <script src="js/jquery.waypoints.min.js"></script>
+    <script src="js/jquery.animateNumber.min.js"></script>
+    <script src="js/owl.carousel.min.js"></script>
+    <script src="js/quill.min.js"></script>
+    <script src="js/bootstrap-select.min.js"></script>
+    <script src="plugin/jQuery-MultiSelect-master/jquery.multiselect.js"></script>
+ 
+    <script src="js/custom.js"></script>
+ <script>
+    let multiSelectInitialized=false;
+        (function ($) {
+            const state = {
+                quill: null,
+                form: null
+            };
+          
+
+
+            const selectors = {
+                messageBox: document.getElementById('messageBox'),
+                hiddenDescription: document.getElementById('description')
+            };
+
+            const messages = {
+                defaultError: 'Unable to save job. Please try again.'
+            };
+
+            function initMultiSelects() {
+            	if(multiSelectInitialized){
+            		return;
+            	}
+            	multiSelectInitialized=true;
+                if ($.fn.multiselect) {
+                    $('#skills').multiselect({
+                        columns: 1,
+                        placeholder: 'Select required skills',
+                        search: true,
+                        selectAll: false
+                    });
+                    $('#jobType').multiselect({
+                        columns: 1,
+                        placeholder: 'Select job type(s)',
+                        search: false,
+                        selectAll: false
+                    });
+                }
+            }
+
+            function syncDescriptionField() {
+                if (!selectors.hiddenDescription) {
+                    return;
+                }
+                if (state.quill) {
+                    const html = state.quill.root.innerHTML.trim();
+                    selectors.hiddenDescription.value = html === '<p><br></p>' ? '' : html;
+                } else {
+                    const editor = document.getElementById('jobDescriptionEditor');
+                    if (editor) {
+                        selectors.hiddenDescription.value = editor.innerHTML.trim();
+                    }
+                }
+            }
+
+            function initQuill() {
+
+                if (window.Quill && document.getElementById('jobDescriptionEditor')) {
+                    state.quill = new Quill('#jobDescriptionEditor', {
+                        theme: 'snow',
+                        placeholder: 'Describe the role, responsibilities, and required qualifications.'
+                    });
+                   
+                    syncDescriptionField();
+                    state.quill.on('text-change', syncDescriptionField);
+                }
+            }
+
+            function showMessage(type, text) {
+                if (!selectors.messageBox) {
+                    return;
+                }
+                const alertType = type === 'success' ? 'success' : 'danger';
+                selectors.messageBox.innerHTML = `
+                    <div class="alert alert-${alertType} alert-dismissible fade show" role="alert">
+                        ${escapeHtml(text)}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>`;
+            }
+
+            function escapeHtml(value) {
+                if (!value) {
+                    return '';
+                }
+                return String(value)
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;')
+                    .replace(/'/g, '&#39;');
+            }
+
+            function applyClosingDateMin() {
+                const closingControl = document.getElementById('closing_date');
+                if (closingControl) {
+                    closingControl.setAttribute('min', new Date().toISOString().split('T')[0]);
+                }
+            }
+
+            function hydrateMessageFromQuery() {
+                const params = new URLSearchParams(window.location.search);
+                if (!params.size) {
+                    return;
+                }
+                if (params.has('error')) {
+                    const error = params.get('error');
+                    let text = messages.defaultError;
+                    if (error === 'missingTitle') {
+                        text = 'Job title is required.';
+                    } else if (error === 'missingLocation') {
+                        text = 'Location is required.';
+                    } else if (error === 'unauthorized') {
+                        text = 'Your session expired. Please log in as a recruiter again.';
+                    } else if (error === 'saveFailed') {
+                        text = messages.defaultError;
+                    }
+                    showMessage('error', text);
+                } else if (params.has('msg') && params.get('msg') === 'success') {
+                    showMessage('success', 'Job posted successfully!');
+                }
+
+            }
+
+         
+            function getQueryParam(name) {
+                const url = new URL(window.location.href);
+                return url.searchParams.get(name);
+            }
+
+            function fillFormWithJob(job) {
+                $('#company_name').val(job.companyName || '');
+                $('#company_website').val(job.companyWebsite || '');
+                $('#company_description').val(job.companyDescription || '');
+                $('#title').val(job.title || '');
+                $('#location').val(job.location || '');
+                $('#experience').val(job.experience || '');
+                $('#salary').val(job.salary || '');
+              
+                
+                
+                if (job.jobType) {
+                    let types = Array.isArray(job.jobType) ? job.jobType : String(job.jobType).split(',').map(s => s.trim()).filter(Boolean);
+                    $('#jobType').val(types);
+                    $('#jobType').multiselect('refresh');
+                } else {
+                    $('#jobType').val([]);
+                    $('#jobType').multiselect('refresh');
+                }
+                
+                if (job.skills) {
+                    let skills = Array.isArray(job.skills) ? job.skills : String(job.skills).split(',').map(s => s.trim()).filter(Boolean);
+                    $('#skills').val(skills);
+                    $('#skills').multiselect('refresh');
+                } else {
+                    $('#skills').val([]);
+                    $('#skills').multiselect('refresh');
+                }
+              
+				if (job.description && state.quill) {
+					    setTimeout(() => {
+					        state.quill.root.innerHTML = job.description;
+					        syncDescriptionField();
+					    }, 200);
+					}
+ 				
+					else {
+                    if (state.quill) {
+                        state.quill.root.innerHTML = '';
+                    } else {
+                        $('#jobDescriptionEditor').html('');
+                    }
+                }
+                syncDescriptionField();
+                $('#closing_date').val(job.closingDate || '');
+                syncDescriptionField();
+                setTimeout(() => syncDescriptionField(), 300);
+            }
+            function setEditMode(jobId) {
+                $('#submitBtn').text('Save Changes');
+                $('#jobForm').attr('action', 'EditJobServlet');
+               
+                if ($('#jobId').length === 0) {
+                    $('<input>').attr({type: 'hidden', id: 'jobId', name: 'jobId', value: jobId}).appendTo('#jobForm');
+                } else {
+                    $('#jobId').val(jobId);
+                }
+            }
+
+            $(function () {
+            	$("form").on("submit", function(e) {
+            	    if (e.originalEvent === undefined) {
+            	     
+            	        e.preventDefault();
+            	        e.stopImmediatePropagation();
+            	        return false;
+            	    }
+            	});
+
+                applyClosingDateMin();
+                initMultiSelects();
+                initQuill();
+                state.form = document.querySelector('#jobForm');
+                if (state.form) {
+                    state.form.addEventListener('submit', function (e) {
+                       
+                        // e.preventDefault();
+                      //   e.stopImmediatePropagation();
+                        
+                         if (!state.form.checkValidity()) {
+                          return;  
+                      }
+ document.getElementById("submitBtn").disabled = true;
+
+    isFormDirty = false;
+    window.onbeforeunload = null;
+                       //  if (state.form.dataset.submitted === "true") {
+                   // return;
+             //   }
+             //// state.form.dataset.submitted = "true";
+ 
+
+    syncDescriptionField();
+                       
+                        $('#jobForm input[name="jobType[]"][type="hidden"]').remove();
+                        $('#jobForm input[name="skills[]"][type="hidden"]').remove();
+                       
+                       
+                        let jobTypeVals = $('#jobType').val() || [];
+                        jobTypeVals = [...new Set(jobTypeVals)];  
+                       
+                     
+                        let skillsVals = $('#skills').val() || [];
+                        skillsVals = [...new Set(skillsVals)];
+                       
+                       // state.form.submit();
+
+                     
+                     let formData = new FormData(state.form);
+                       
+                       
+                   
+                    });
+               
+               
+               
+
+                }      
+                const jobId = new URLSearchParams(window.location.search).get('jobId');
+    if (jobId) {
+   
+        $.ajax({
+             url: 'EditJobServlet?jobId=' + encodeURIComponent(jobId),
+            type: 'GET',
+            dataType: 'json',
+            success: function(job) {
+                fillFormWithJob(job);
+                setEditMode(jobId);
+               
+                if (job.postedDate) {
+                    document.getElementById("closing_date").setAttribute("min", job.postedDate);
+                }
+            },
+            error: function() {
+                showMessage('error', 'Unable to load job details for editing.');
+            }
+        });
+                }
+    let isFormDirty = false;
+
+    $("#jobForm :input").on("input change", function () {
+        isFormDirty = true;
+    });
+
+    window.addEventListener("beforeunload", function (e) {
+        if (isFormDirty) {
+            e.preventDefault();
+           
+            e.returnValue = "";
+        }
+    });
+   
+   
+    $("#cancelBtn").click(function (e) {
+        e.preventDefault();
+
+        Swal.fire({
+            icon: 'warning',
+            title: 'Cancel Confirmation',
+            text: 'Are you sure you want to cancel? Unsaved data will be lost.',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, Cancel',
+            cancelButtonText: 'No, Stay',
+            confirmButtonColor: '#dc3545',
+            cancelButtonColor: '#28a745'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                isFormDirty = false;
+         
+                if (!$("#jobId").length) {
+                    window.location.href = "recruiter_dashboard.html";
+                }
+         
+                else {
+                    window.location.href = "recruiter-view-jobs.html";
+                }
+            }
+        });
+    });
+            });
+         
+        })(jQuery);
+    </script>
+</body>
+</html>

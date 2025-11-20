@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>view Jobs | Recruiter Dashboard</title>
+ 
+
+  <link rel="stylesheet" href="css/custom-bs.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+ 
+  <style>
+    body {
+      font-family: 'Nunito', sans-serif;
+      background-color: #f8f9fa;
+      color: #333;
+    }
+    .job-card {
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+      padding: 20px;
+      margin-bottom: 20px;
+      transition: all 0.3s ease;
+    }
+    .job-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+    }
+    .job-card h4 {
+      font-weight: 700;
+      color: #000;
+    }
+    .job-card .job-location {
+      color: #777;
+      font-size: 0.9rem;
+    }
+    .job-type {
+      display: inline-block;
+      background: #89ba16;
+      color: #fff;
+      border-radius: 20px;
+      padding: 5px 12px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+    .edit-btn {
+      background: #007bff;
+      color: #fff;
+      padding: 6px 12px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .edit-btn:hover {
+      background: #0056b3;
+      color: #fff;
+    }
+    .page-title {
+      font-weight: 700;
+      color: #222;
+      text-align: center;
+      margin-bottom: 40px;
+    }
+  </style>
+</head>
+ 
+<body  id="top">
+ <div class="site-wrap">
+    <div class="site-mobile-menu site-navbar-target">
+      <div class="site-mobile-menu-header">
+        <div class="site-mobile-menu-close mt-3">
+          <span class="icon-close2 js-menu-toggle"></span>
+        </div>
+      </div>
+      <div class="site-mobile-menu-body"></div>
+    </div>
+  <!-- Navbar (reuse your recruiter navbar) -->
+  <header class="site-navbar mt-3">
+    <div class="container-fluid">
+      <div class="row align-items-center">
+        <div class="site-logo col-6"><a href="index.html">JobBoard</a></div>
+        <nav class="mx-auto site-navigation">
+          <ul class="site-menu js-clone-nav d-none d-xl-block ml-0 pl-0">
+            <li><a href="recruiter_dashboard.html">Dashboard</a></li>
+            <li><a href="post-job.html">Post Job</a></li>
+            <li class="active"><a href="recruiter-view-jobs.html" class="recruiter-nav-link active">View Jobs</a></li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </header>
+  
+    <section class="section-hero overlay inner-page bg-image" style="background-image: url('images/hero_1.jpg');" id="home-section">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-7">
+            <h1 class="text-white font-weight-bold">Recruiter Dashboard</h1>
+            <div class="custom-breadcrumbs">
+              <a href="#">Home</a> <span class="mx-2 slash">/</span>
+              <a href="#">Recruiter</a> <span class="mx-2 slash">/</span>
+              <span class="text-white"><strong>Dashboard</strong></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+ 
+  <section class="site-section">
+    <div class="container">
+  <div id="messageBox" class="alert-placeholder mb-3"></div>
+  <h2 class="page-title">Manage Jobs</h2>
+  <div id="jobContainer" class="row justify-content-center"></div>
+    </div>
+  </section>
+  
+ 
+  <footer class="site-footer">
+    <div class="container text-center">
+      <p>&copy; <script>document.write(new Date().getFullYear());</script> JobBoard. All Rights Reserved.</p>
+    </div>
+  </footer>
+  
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+ 
+  <script>
+    function showMessage(type, text) {
+      const messageBox = document.getElementById('messageBox');
+      if (!messageBox) return;
+      const alertType = type === 'success' ? 'success' : 'danger';
+      messageBox.innerHTML = `
+        <div class="alert alert-${alertType} alert-dismissible fade show" role="alert">
+          ${text}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>`;
+    }
+
+    function hydrateMessageFromQuery() {
+      const params = new URLSearchParams(window.location.search);
+      if (params.has('msg')) {
+        showMessage('success', params.get('msg'));
+       
+        history.replaceState({}, document.title, window.location.pathname);
+      }
+    }
+
+    $(document).ready(function() {
+      hydrateMessageFromQuery();
+      $.ajax({
+        url: "RecruiterJobsServlet",
+        type: "GET",
+        dataType: "json",
+        success: function(jobs) {
+          const container = $("#jobContainer");
+          container.empty();
+
+          if (!jobs || jobs.length === 0) {
+            container.html("<p class='text-center text-muted'>No jobs posted yet.</p>");
+            return;
+          }
+
+          jobs.forEach(job => {
+            const jobHTML = `
+              <div class="col-md-10 job-card">
+                <div class="d-flex justify-content-between align-items-left">
+                  <div>
+                    <h4>${job.title}</h4>
+                    <p class="job-location text-left"><i class="fa-solid fa-location-dot  me-2"></i>${job.location || "Not specified"}</p>
+                    <span class="job-type">${job.jobType || "Full-Time"}</span>
+                    <p class="mt-2 text-muted text-left"><strong>Salary:</strong> ${job.salary || "N/A"}</p>
+                    <p class="text-muted text-left"><strong>Experience:</strong> ${job.experience || "N/A"}</p>
+                  </div>
+                  <div>
+                    <a href="post-job.html?jobId=${job.jobId}" class="edit-btn">Edit</a>
+                  </div>
+                </div>
+              </div>`;
+            container.append(jobHTML);
+          });
+        },
+        error: function() {
+          $("#jobContainer").html("<p class='text-center text-danger'>Error loading jobs. Please try again later.</p>");
+        }
+      });
+    });
+  </script>
+  <script src="js/isotope.pkgd.min.js"></script>
+    <script src="js/stickyfill.min.js"></script>
+    <script src="js/jquery.fancybox.min.js"></script>
+    <script src="js/jquery.easing.1.3.js"></script>
+    <script src="js/jquery.waypoints.min.js"></script>
+    <script src="js/jquery.animateNumber.min.js"></script>
+    <script src="js/owl.carousel.min.js"></script>
+    <script src="js/bootstrap-select.min.js"></script>
+    <script src="js/custom.js"></script>
+</body>
+</html>
+ 

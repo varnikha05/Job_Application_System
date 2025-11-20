@@ -1,0 +1,577 @@
+<!doctype html>
+<html lang="en">
+  <head>
+  <script>
+	document.addEventListener("DOMContentLoaded", function() {
+    fetch("SessionCheckServlet", {
+    	method: "GET", 
+    	credentials: "include"
+    	})
+        .then(res => res.json())
+        .then(data => {
+        	if (!data.admin) {
+        	    window.location.href = "Employers.html";
+        	    return;
+        	} 
+        	    
+        	    document.documentElement.style.visibility = 'visible';
+        	
+
+        })
+        .catch(err => {
+            window.location.href = "Employers.html";
+        });
+});
+</script>
+      <title>Admin Dashboard</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    
+    
+    <link rel="stylesheet" href="css/custom-bs.css">
+    <link rel="stylesheet" href="css/jquery.fancybox.min.css">
+    <link rel="stylesheet" href="css/bootstrap-select.min.css">
+    <link rel="stylesheet" href="fonts/icomoon/style.css">
+    <link rel="stylesheet" href="fonts/line-icons/style.css">
+    <link rel="stylesheet" href="css/owl.carousel.min.css">
+    <link rel="stylesheet" href="css/animate.min.css">
+    <link rel="stylesheet" href="css/quill.snow.css">
+    
+
+    <!-- MAIN CSS -->
+    <link rel="stylesheet" href="css/style.css">  
+    
+    <!-- Admin Dashboard CSS -->
+    <link rel="stylesheet" href="css/admin-dashboard.css">
+    
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap4.min.css">
+    
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> 
+
+     
+  </head>
+  <body id="top">
+<div class="site-wrap">
+
+    <div class="site-mobile-menu site-navbar-target">
+      <div class="site-mobile-menu-header">
+        <div class="site-mobile-menu-close mt-3">
+          <span class="icon-close2 js-menu-toggle"></span>
+        </div>
+      </div>
+      <div class="site-mobile-menu-body"></div>
+    </div> <!-- .site-mobile-menu -->
+    
+
+    <!-- NAVBAR -->
+    <header class="site-navbar mt-3">
+      <div class="container-fluid">
+        <div class="row align-items-center">
+          <div class="site-logo col-6"><a href="index.html">JobBoard</a></div>
+
+          <nav class="mx-auto site-navigation">
+            <ul class="site-menu js-clone-nav d-none d-xl-block ml-0 pl-0">
+              <li><a href="index.html" class="nav-link">Home</a></li>
+             
+              <li class="has-children">
+                <a href="#">Management</a>
+                <ul class="dropdown">
+                  <li><a href="Add Recruiter.html">Add Recruiter</a></li>
+                  <li><a href="Add Admin.html">Add Admin</a></li>
+                
+                </ul>
+              </li>
+            
+            </ul>
+          </nav>
+          
+         <div class="right-cta-menu text-right d-flex aligin-items-center col-6">
+        <div class="ml-auto">
+       	
+       	 <!-- Enhanced Profile dropdown menu -->
+          <div class="dropdown d-none d-lg-inline-block ml-3">
+            <button class="btn btn-outline-light border-width-2 dropdown-toggle" type="button" id="adminProfileMenu"
+              data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <i class="icon-user mr-2"></i>Admin Panel
+            </button>
+            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="adminProfileMenu">
+              <div class="dropdown-header">
+                <strong>Admin Dashboard</strong><br>
+                <small class="text-muted">Welcome back!</small>
+              </div>
+            
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item text-danger" href="LogoutServlet" onclick="logout()">
+            
+                <i class="icon-sign-out mr-2"></i>Logout
+              </a>
+            </div>
+          </div>
+        </div>
+ 
+        <a href="#" class="site-menu-toggle js-menu-toggle d-inline-block d-xl-none mt-lg-2 ml-3">
+          <span class="icon-menu h3 m-0 p-0 mt-2"></span>
+        </a>
+      </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- HOME -->
+    <section class="section-hero overlay inner-page bg-image" style="background-image: url('images/hero_1.jpg');" id="home-section">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-7">
+            <h1 class="text-white mb-4">Admin Dashboard</h1>
+            <div class="d-flex">
+              <div class="intro">
+                <p class="mb-4"><span class="text-white">Manage your JobBoard platform with real-time insights and comprehensive controls.</span></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- DASHBOARD CONTENT -->
+    <section class="site-section bg-light" id="dashboard-section">
+      <div class="container-fluid">
+        
+        <!-- Navigation Pills for Management -->
+        <div class="row mb-4">
+          <div class="col-12">
+           <ul class="nav nav-pills nav-justified dashboard-nav">
+             <li class="nav-item">
+             <a href="#" data-section="dashboard-content">
+             <i class="icon-home mr-2"></i>Dashboard
+             </a>
+             </li>
+             <li class="nav-item">
+             <a  href="manage-users.html" >
+             <i class="icon-user mr-2"></i>Manage Users
+            </a>
+             </li>
+              <li class="nav-item">
+                <a  href="manage-recruiters.html">
+                  <i class="icon-briefcase mr-2"></i>Manage Recruiters
+                </a>
+              </li>
+              <li class="nav-item">
+                <a  href="manage-admins.html" >
+                  <i class="icon-lock mr-2"></i>Manage Admins
+                </a>
+              </li>
+             
+			</ul>
+          </div>
+        </div>
+
+      
+        <div id="dashboard-content" class="dashboard-section">
+          
+          <!-- Metrics Row -->
+          <div class="row mb-4">
+            <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
+              <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total Users</div>
+                      <div class="h5 mb-0 font-weight-bold text-gray-800" id="totalUsers">Loading...</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="icon-user fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
+              <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Total Recruiters</div>
+                      <div class="h5 mb-0 font-weight-bold text-gray-800" id="totalRecruiters">Loading...</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="icon-briefcase fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
+              <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Total Jobs</div>
+                      <div class="h5 mb-0 font-weight-bold text-gray-800" id="totalJobs">Loading...</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="icon-briefcase fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-lg-6 col-md-6 mb-4">
+              <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Total Applications</div>
+                      <div class="h5 mb-0 font-weight-bold text-gray-800" id="totalApplications">Loading...</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="icon-file-text fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+    
+          <div class="row">
+            
+            <!-- Chart Column -->
+            <div class="col-xl-8 col-lg-7">
+              
+              <!-- Chart Card -->
+              <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                  <h6 class="m-0 font-weight-bold text-primary">Applications Overview</h6>
+                  <div class="btn-group btn-group-sm" role="group">
+                    <button type="button" class="btn btn-outline-primary" onclick="changeChartPeriod('today')">Today</button>
+                    <button type="button" class="btn btn-outline-primary active" onclick="changeChartPeriod('week')">Week</button>
+                    <button type="button" class="btn btn-outline-primary" onclick="changeChartPeriod('month')">Month</button>
+                    <button type="button" class="btn btn-outline-primary" onclick="changeChartPeriod('year')">Year</button>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div class="chart-area" style="position: relative; height: 320px;">
+                    <canvas id="applicationsChart"></canvas>
+                  </div>
+                  <div class="mt-3 text-center">
+                    <small class="text-muted">
+                      <i class="icon-info-circle"></i> Showing application trends for the selected period
+                    </small>
+                  </div>
+                </div>
+              </div>
+
+             
+		         
+		            <input type="hidden" id="searchRecruiter">
+					<input type="hidden" id="filterStatus">
+					<input type="hidden" id="filterDateFrom">
+					<input type="hidden" id="filterDateTo">
+					
+              <!-- Data Table -->
+              <div class="card shadow mb-4">
+                <div class="card-header py-3">
+               
+                  <h6 class="m-0 font-weight-bold text-primary">Jobs & Applications Management</h6>
+                </div>
+                <div class="card-body">
+                  <div class="table-responsive">
+                    <table class="table table-bordered" id="jobsTable" width="100%" cellspacing="0">
+                         <div class="d-flex justify-content-between align-items-center mb-3">
+                      <button class="btn btn-outline-secondary " onclick="location.reload();"><i class="fa fa-sync"></i> Refresh</button></div>
+                      <thead>
+                        <tr>
+                          <th>Recruiter Name</th>
+                          <th>Job Title</th>
+                          <th>Posted Date</th>
+                          <th>Applications</th>
+                          <th>Status</th>
+                          <th>Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody id="jobsTableBody">
+                      
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+           
+            <!-- Activity &  Stats Column -->
+            <div class="col-xl-4 col-lg-5">
+              
+              <!--  Stats Card -->
+              <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                  <h6 class="m-0 font-weight-bold text-primary">Quick Stats</h6>
+                </div>
+                <div class="card-body">
+                  <div class="row text-center">
+                    <div class="col-6">
+                      <div class="border-bottom pb-2 mb-2">
+                        <h5 class="text-info" id="quickPendingRecruiters">-</h5>
+                        <small class="text-muted">Pending Recruiters</small>
+                      </div>
+                    </div>
+                    <div class="col-6">
+                      <div class="border-bottom pb-2 mb-2">
+                        <h5 class="text-warning" id="quickTodayJobs">-</h5>
+                        <small class="text-muted">Jobs Today</small>
+                      </div>
+                    </div>
+                    <div class="col-6">
+                      <div class="pt-2">
+                        <h5 class="text-success" id="quickTodayApplications">-</h5>
+                        <small class="text-muted">Applications Today</small>
+                      </div>
+                    </div>
+                    <div class="col-6">
+                      <div class="pt-2">
+                        <h5 class="text-danger" id="quickActiveSessions">-</h5>
+                        <small class="text-muted">users</small>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Recent Activity Card -->
+              <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                  <h6 class="m-0 font-weight-bold text-primary">Recent Activity</h6>
+                  <button class="btn btn-sm btn-outline-primary" onclick="loadRecentActivity()">
+                    <i class="icon-refresh"></i>
+                  </button>
+                </div>
+                <div class="card-body">
+                  <div id="recentActivityContainer">
+                    <div class="text-center text-muted py-3">
+                      <i class="icon-clock"></i><br>
+                      Loading activities...
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+          
+
+            </div>
+              
+            
+      
+       
+   
+       <div id="manage-recruiters-content" class="dashboard-section" style="display: none;">
+          <div class="card shadow mb-4">
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+              <h6 class="m-0 font-weight-bold text-primary">Recruiter Management</h6>
+              <button class="btn btn-primary btn-sm" onclick="addNewRecruiter()">
+                <i class="icon-plus mr-1"></i>Add New Recruiter
+              </button>
+            </div>
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table-bordered" id="recruitersTable" width="100%" cellspacing="0">
+                  <thead>
+                    <tr>
+                      <th>Recruiter ID</th>
+                      <th>Company Name</th>
+                      <th>Contact Person</th>
+                      <th>Email</th>
+                      <th>Phone</th>
+                      <th>Jobs Posted</th>
+                      <th>Status</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="recruitersTableBody">
+                    <!-- Recruiters data will be loaded here -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Manage Admins Section -->
+        <div id="manage-admins-content" class="dashboard-section" style="display: none;">
+          <div class="card shadow mb-4">
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+              <h6 class="m-0 font-weight-bold text-primary">Admin Management</h6>
+              <button class="btn btn-primary btn-sm" onclick="addNewAdmin()">
+                <i class="icon-plus mr-1"></i>Add New Admin
+              </button>
+            </div>
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table-bordered" id="adminsTable" width="100%" cellspacing="0">
+                  <thead>
+                    <tr>
+                      <th>Admin ID</th>
+                      <th>Full Name</th>
+                      <th>Email</th>
+                      <th>Role</th>
+                      <th>Last Login</th>
+                      <th>Status</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="adminsTableBody">
+                    <!-- Admins data will be loaded here -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section> 
+       <footer class="site-footer">
+
+      <a href="#top" class="smoothscroll scroll-top">
+        <span class="icon-keyboard_arrow_up"></span>
+      </a>
+
+      <div class="container">
+        <div class="row mb-5">
+          <div class="col-6 col-md-3 mb-4 mb-md-0">
+            <h3>Search Trending</h3>
+            <ul class="list-unstyled">
+              <li><a href="#">Web Design</a></li>
+              <li><a href="#">Graphic Design</a></li>
+              <li><a href="#">Web Developers</a></li>
+              <li><a href="#">Python</a></li>
+              <li><a href="#">HTML5</a></li>
+              <li><a href="#">CSS3</a></li>
+            </ul>
+          </div>
+          <div class="col-6 col-md-3 mb-4 mb-md-0">
+            <h3>Company</h3>
+            <ul class="list-unstyled">
+              <li><a href="#">About Us</a></li>
+              <li><a href="#">Career</a></li>
+              <li><a href="#">Blog</a></li>
+              <li><a href="#">Resources</a></li>
+            </ul>
+          </div>
+          <div class="col-6 col-md-3 mb-4 mb-md-0">
+            <h3>Support</h3>
+            <ul class="list-unstyled">
+              <li><a href="#">Support</a></li>
+              <li><a href="#">Privacy</a></li>
+              <li><a href="#">Terms of Service</a></li>
+            </ul>
+          </div>
+          <div class="col-6 col-md-3 mb-4 mb-md-0">
+            <h3>Contact Us</h3>
+            <div class="footer-social">
+              <a href="#"><span class="icon-facebook"></span></a>
+              <a href="#"><span class="icon-twitter"></span></a>
+              <a href="#"><span class="icon-instagram"></span></a>
+              <a href="#"><span class="icon-linkedin"></span></a>
+            </div>
+          </div>
+        </div>
+
+        <div class="row text-center">
+          <div class="col-12">
+            <p class="copyright"><small>
+              <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+            Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="icon-heart text-danger" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank" >Colorlib</a>
+            <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. --></small></p>
+          </div>
+        </div>
+      </div>
+    </footer>
+  
+  </div>
+
+
+  
+     
+     
+ 
+<div class="modal fade" id="jobDetailsModal" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      
+      <div class="modal-header">
+        <h5 class="modal-title">Job Details</h5>
+        <button class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+ 
+      <div class="modal-body">
+        <p><strong>Title:</strong> <span id="jd_title"></span></p>
+        <p><strong>Company:</strong> <span id="jd_company"></span></p>
+        <p><strong>Recruiter:</strong> <span id="jd_recruiter"></span></p>
+        <p><strong>Posted Date:</strong> <span id="jd_posted"></span></p>
+        <p><strong>Experience:</strong> <span id="jd_exp"></span></p>
+        <p><strong>Salary:</strong> <span id="jd_salary"></span></p>
+        <p><strong>Status:</strong> <span id="jd_status"></span></p>
+ 
+        <hr>
+        <h6>Description</h6>
+        <p id="jd_desc"></p>
+      </div>
+ 
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+ 
+    </div>
+  </div>
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+ 
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
+ 
+
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+ 
+<!-- Chart.js - Modern Chart Library -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+ 
+
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap4.min.js"></script>
+ 
+
+<script src="js/admin-dashboard.js"></script>
+<!--  
+<script>
+
+setInterval(function () {
+    fetch("SessionCheckServlet", {
+        method: "GET",
+        credentials: "include"
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (!data.admin) {
+            window.location.href = "Employers.html";
+            return;
+        }
+    })
+    .catch(err => {
+        window.location.href = "Employers.html";
+    });
+}, 5000);
+</script>
+--> 
+  </body>
+</html>
+
+

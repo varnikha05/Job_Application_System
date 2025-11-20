@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Job Details - Admin</title>
+ 
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+ 
+    <style>
+        body {
+         background: #f4f4f4; padding: 20px; 
+        }
+        .job-card { 
+        background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1);
+         }
+        .title { 
+        font-size: 22px; font-weight: bold; margin-bottom: 10px;
+         }
+        .section-title {
+         font-weight: bold; margin-top: 20px;
+          }
+    </style>
+</head>
+ 
+<body>
+ 
+<div class="container">
+    <div class="job-card">
+        <h2 class="title" id="jobTitle">Loading...</h2>
+ 
+        <div id="jobDetails">
+          
+        </div>
+ 
+        <a href="admin_home.html" class="btn btn-secondary mt-3">Back</a>
+    </div>
+</div>
+ 
+<script src="js/jquery.min.js"></script>
+ 
+<script>
+    function getParameter(name) {
+        const url = new URL(window.location.href);
+        return url.searchParams.get(name);
+    }
+ 
+    const jobId = getParameter("job_id");
+ 
+    $.ajax({
+        url: "/JOB_APPLICATION_SYSTEM/JobDetailsServlet?job_id=" + jobId,
+        method: "GET",
+        success: function (data) {
+ 
+            $("#jobTitle").text(data.title || "Job Details");
+ 
+            let html = `
+                <p><strong>Recruiter ID:</strong> ${data.recruiterId}</p>
+                <p><strong>Description:</strong> ${data.description}</p>
+                <p><strong>Location:</strong> ${data.location}</p>
+                <p><strong>Experience:</strong> ${data.experience}</p>
+                <p><strong>Salary:</strong> ${data.salary}</p>
+                <p><strong>Status:</strong> ${data.status}</p>
+ 
+                <h5 class="section-title">Company Information</h5>
+                <p><strong>Company Name:</strong> ${data.companyName}</p>
+                <p><strong>Email:</strong> ${data.email}</p>
+                <p><strong>Website:</strong> ${data.companyWebsite}</p>
+                <p><strong>Company Description:</strong> ${data.companyDescription}</p>
+ 
+                <h5 class="section-title">Applications</h5>
+                <p><strong>Total Applications:</strong> ${data.applicationCount}</p>
+            `;
+ 
+            $("#jobDetails").html(html);
+        },
+ 
+        error: function (xhr) {
+            $("#jobTitle").text("Error Loading Job Details");
+        }
+    });
+</script>
+ 
+</body>
+</html>
+ 

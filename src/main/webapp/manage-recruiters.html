@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Manage Recruiters - JobBoard Admin</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="css/custom-bs.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/admin-dashboard.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap4.min.css">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css">
+  
+  <!-- SweetAlert2 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  
+  <style>
+    .action-icons i{cursor:pointer;margin:0 6px;color:#007bff}
+    .action-icons i.delete{color:#dc3545}
+    .action-icons i.save{color:#28a745}
+    .action-icons i.cancel{color:#6c757d}
+    .table th,.table td{vertical-align:middle!important}
+    .table thead th{background:#f8f9fa}
+     table.dataTable thead th {
+        color: #000 !important;   /* black text */
+        font-weight: 600;
+    }
+
+   
+    table.dataTable thead {
+        background: #f5f5f5 !important;
+    }
+  </style>
+</head>
+<body>
+<header class="site-navbar mt-3">
+  <div class="container-fluid">
+    <div class="row align-items-center">
+      <div class="site-logo col-6"><a href="admin_home.html">JOBBOARD ADMIN</a></div>
+      <nav class="mx-auto site-navigation">
+        <ul class="site-menu js-clone-nav d-none d-xl-block ml-0 pl-0">
+          <li><a href="admin_home.html" class="nav-link">Dashboard</a></li>
+
+          <li><a href="manage-recruiters.html" class="nav-link active">Manage Recruiters</a></li>
+        </ul>
+      </nav>
+      <div class="right-cta-menu text-right d-flex aligin-items-center col-6">
+        <div class="ml-auto">
+          <button class="btn btn-outline-success border-width-2"><i class="icon-user mr-2"></i>Admin</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="section-hero overlay inner-page bg-image" style="background-image:url('images/hero_1.jpg')">
+  <div class="container"><div class="row"><div class="col-lg-7">
+    <h1 class="text-white mb-4">Manage Recruiters</h1>
+    <p class="mb-4 text-white-50">View, edit & delete recruiter accounts. Export as needed.</p>
+  </div></div></div>
+</section>
+
+<section class="site-section bg-light">
+  <div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <div>
+        <!-- No Add Recruiter button as requested -->
+        <form id="exportRecruitersForm" action="ExcelExportServlet" method="post" style="display:inline;">
+          <input type="hidden" name="dataType" value="recruiters">
+          <button type="submit" class="btn btn-info">
+            <i class="fa fa-download"></i> Export Recruiters Data
+          </button>
+        </form>
+      </div>
+      <button class="btn btn-outline-secondary" onclick="location.reload();">
+        <i class="fa fa-sync"></i> Refresh
+      </button>
+    </div>
+
+    <div class="card shadow">
+      <div class="card-body">
+        <table id="recruitersTable" class="table table-bordered table-hover">
+          <thead>
+            <tr>
+              <th>ID</th>
+			    <th>Company</th>
+			    <th>Email</th>
+			    <th>Status</th>
+			    <th>Action</th>
+			            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<footer class="site-footer"></footer>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap4.min.js"></script>
+<script src="https://use.fontawesome.com/releases/v5.15.4/js/all.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script>
+$(function(){
+  let editingRow=null;
+  const table = $('#recruitersTable').DataTable({
+    destroy:true, responsive:true,
+    ajax:{ url:'/JOB_APPLICATION_SYSTEM/ManageRecruitersServlet',
+    	type:'GET',
+    	dataSrc:'' },
+    columns:[
+      { data:'recruiterId' },
+      { data:'companyName' },
+      { data:'email' },
+      
+      { data:'status' },
+   
+      { data:null, orderable:false, render:()=>`
+        <span class="action-icons">
+          <i class="fa fa-edit edit"></i>
+          <i class="fa fa-trash delete"></i>
+        </span>` }
+    ]
+  });
+
+
+  $('#recruitersTable tbody').on('click','.edit',function(){
+    if(editingRow) return;
+    const $row=$(this).closest('tr'); editingRow=$row; $row.addClass('editing');
+    $row.find('td').each(function(i){
+      if(i===1||i===2||i===3){
+        const text=$(this).text();
+        $(this).html('<input type="text" class="form-control" value="'+text+'">');
+      }
+    });
+    $row.find('.action-icons').html('<i class="fa fa-save save"></i><i class="fa fa-times cancel"></i>');
+  });
+
+
+  $('#recruitersTable tbody').on('click', '.save', function () {
+
+    const row = $(this).closest('tr');
+
+    const recruiterId   = row.find('td:eq(0)').text().trim();
+    const companyName   = row.find('td:eq(1) input').val().trim();
+    const email         = row.find('td:eq(2) input').val().trim();
+    //const phone         = row.find('td:eq(3) input').val().trim();
+    const status        = row.find('td:eq(3) input').val().trim();
+
+  
+    const designation    = "HR"; 
+
+    if (!companyName || !email) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Validation Error',
+            text: 'Company Name and Email are required!',
+            confirmButtonColor: '#28a745'
+        });
+        return;
+    }
+
+    $.ajax({
+        url: "ManageRecruitersServlet",
+        type: "POST",
+        data: {
+            _method: "PUT",
+            recruiterId: recruiterId,
+   
+            companyName: companyName,
+            email: email,
+         
+            designation: designation,
+            status: status
+        },
+        success: function () {
+            Swal.fire({
+                icon: 'success',
+                title: 'Success!',
+                text: 'Updated successfully',
+                confirmButtonColor: '#28a745'
+            });
+            table.ajax.reload();
+            return;
+        },
+        error: function () {
+            Swal.fire({
+                icon: 'error',
+                title: 'Failed',
+                text: 'Update failed',
+                confirmButtonColor: '#28a745'
+            });
+        }
+    });
+});
+
+
+  $('#recruitersTable tbody').on('click','.cancel',function(){
+    table.ajax.reload(); editingRow=null;
+  });
+
+  $('#recruitersTable tbody').on('click','.delete',function(){
+    const recruiterId=$(this).closest('tr').find('td:eq(0)').text().trim();
+    
+    Swal.fire({
+        icon: 'warning',
+        title: 'Delete Recruiter',
+        text: 'Are you sure you want to delete this recruiter?',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, Delete',
+        cancelButtonText: 'Cancel',
+        confirmButtonColor: '#dc3545',
+        cancelButtonColor: '#6c757d'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+              url:'ManageRecruitersServlet', 
+              type:'POST',
+              data:{
+                  _method:'DELETE', 
+                  recruiterId },
+              success:function(){ 
+                  table.ajax.reload(); 
+                  Swal.fire({
+                      icon: 'success',
+                      title: 'Deleted!',
+                      text: 'Recruiter deleted',
+                      confirmButtonColor: '#28a745'
+                  });
+              },
+              error:function(){ 
+                  Swal.fire({
+                      icon: 'error',
+                      title: 'Failed',
+                      text: 'Delete failed',
+                      confirmButtonColor: '#28a745'
+                  });
+              }
+            });
+        }
+    });
+  });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Applications | Recruiter</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+ 
+  <!-- Your theme -->
+  <link rel="stylesheet" href="css/custom-bs.css" />
+  <link rel="stylesheet" href="css/style.css" />
+ 
+  <!-- Plugins-->
+  <link rel="stylesheet" href="plugin/plugin_project/jquery.dataTables.min.css" />
+  <link rel="stylesheet" href="plugin/plugin_project/select2.min.css" />
+  <link rel="stylesheet" href="plugin/plugin_project/flatpickr.min.css" />
+  
+  <!-- SweetAlert2 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  
+<style>
+  .badge-status { background:#eef2ff; color:#3f51b5; padding:6px 10px; border-radius:12px; font-weight:600; }
+  
+  
+  .site-navbar { 
+    background: #ffffff;
+    border-bottom: 1px solid #e9ecef;
+    padding: 1.5rem 0; /* Increased padding for more height */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    margin-top: 0 !important;
+    min-height: 80px; /* Set minimum height */
+  }
+  
+  .site-logo a { 
+    color: #495057 !important;
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-decoration: none;
+    letter-spacing: 2px;
+  }
+  
+  .site-logo a:hover {
+    color: #3f51b5 !important;
+    text-decoration: none;
+  }
+  
+  .site-navigation {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+  }
+  
+  .site-navigation ul.site-menu {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+  }
+  
+  .site-navigation ul.site-menu li {
+    margin: 0 1rem;
+  }
+  
+  .site-navigation ul.site-menu li a {
+    color: #6c757d !important;
+    text-decoration: none;
+    font-weight: 500;
+    padding: 0.75rem 1.5rem; /* Increased padding */
+    border-radius: 4px;
+    transition: all 0.3s ease;
+  }
+  
+  .site-navigation ul.site-menu li a:hover {
+    color: #3f51b5 !important;
+    background: rgba(63, 81, 181, 0.1);
+    text-decoration: none;
+  }
+  
+  /* Active state - Dark background for View Applications */
+  .site-navigation ul.site-menu li.active a {
+    color: #ffffff !important;
+    background: #495057 !important; /* Dark gray background */
+    font-weight: 600;
+  }
+  
+  .site-navigation ul.site-menu li.active a:hover {
+    background: #343a40 !important; /* Darker on hover */
+    color: #ffffff !important;
+  }
+
+  body { margin-top: 0 !important; padding-top: 0 !important; }
+  .mt-3 { margin-top: 0 !important; }
+  
+  /* Ensure container alignment */
+  .site-navbar .container-fluid {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .site-navbar .row {
+    align-items: center;
+    height: 100%;
+  }
+  /* Make table full width */
+table.dataTable {
+    width: 100% !important;
+}
+/* ✅ FINAL: Active Tab Styling (Exact Dashboard Look) */
+.site-navigation ul.site-menu li.active a {
+    background: #495057 !important;     /* Dark gray tab */
+    color: #ffffff !important;          /* White text */
+    font-weight: 600;
+    padding: 0.75rem 1.5rem;
+    border-radius: 4px;
+}
+
+/* Active tab hover */
+.site-navigation ul.site-menu li.active a:hover {
+    background: #343a40 !important;
+    color: #ffffff !important;
+}
+
+/* Normal hover (other tabs) */
+.site-navigation ul.site-menu li a:hover {
+    background: rgba(63,81,181,0.1);
+    color: #3f51b5 !important;
+}
+
+
+#appsTable th, #appsTable td {
+    white-space: nowrap;
+    padding-right: 18px;
+}
+
+
+#appsTable td:nth-child(1),
+#appsTable td:nth-child(3),
+#appsTable td:nth-child(4) {
+    white-space: normal !important;
+}
+
+
+#appsTable td:last-child {
+    white-space: nowrap !important;
+}
+
+
+#appsTable tbody tr {
+    height: 58px;
+}
+
+.container, .container-fluid, .card {
+    max-width: 100% !important;
+}
+
+
+.table-responsive {
+    width: 100% !important;
+}
+
+
+#appsTable {
+    width: 100% !important;
+    table-layout: auto !important;
+}
+
+
+#appsTable th, #appsTable td {
+    padding: 12px 16px !important;
+}
+
+
+#appsTable td {
+    white-space: normal !important;
+}
+
+
+.card.p-3 {
+    width: 95% !important;
+    margin: auto;
+}
+  
+  .dataTables_wrapper .dataTables_filter input { border:1px solid #ddd; border-radius:6px; padding:6px 8px; }
+  .modal .form-control, .select2-container--default .select2-selection--single { border-radius:8px; }
+  .select2-container { width:100%!important; }
+  .btn-icon { padding:4px 8px; }
+</style>
+</head>
+<body>
+
+
+
+<header class="site-navbar">
+  <div class="container-fluid">
+    <div class="row align-items-center">
+      <div class="site-logo col-6">
+        <a href="recruiter_dashboard.html">JOBBOARD</a>
+      </div>
+      <nav class="mx-auto site-navigation col-6">
+        <ul class="site-menu js-clone-nav d-none d-xl-block ml-0 pl-0">
+          <li><a href="recruiter_dashboard.html">Dashboard</a></li>
+          <li class="active"><a href="recruiter-applications.html">View Applications</a></li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</header>
+ 
+<div class="container mt-4 mb-5">
+  <div class="card p-3">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h4 class="mb-0">Applications for Your Jobs</h4>
+    </div>
+ 
+    <div id="emptyBox" class="alert alert-info" style="display:none">
+      No applications yet.
+    </div>
+ 
+   <div class="table-responsive" style="overflow-x: visible !important;">
+
+      <table class="table" id="appsTable">
+        <thead>
+        <tr>
+          <th>Job</th>
+          <th>Applicant</th>
+          <th>Email</th>
+          <th>Skills</th>
+          <th>Applied</th>
+          <th>Status</th>
+          <th>Interview Date</th>
+          <th>Final Result</th>
+          <th>Resume</th>
+          <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody><!----></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+ 
+<footer class="site-footer text-center">
+  <p>&copy; <script>document.write(new Date().getFullYear());</script> JobBoard</p>
+</footer>
+
+<div class="modal fade" id="editModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-md">
+    <div class="modal-content p-2">
+      <div class="modal-header">
+        <h5 class="modal-title">Update Application</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">×</button>
+      </div>
+      <div class="modal-body">
+        <form id="editForm" onsubmit="return false" novalidate>
+          <input type="hidden" id="m_applicationId" name="applicationId">
+ 
+          <div class="form-group">
+            <label>Status</label>
+            <select id="m_status" name="status" class="form-control">
+              <option>Applied</option>
+              <option>Shortlisted</option>
+              <option>Selected</option>
+              <option>Rejected</option>
+            </select>
+          </div>
+ 
+          <div class="form-group">
+            <label>Interview Date</label>
+            <input type="text" id="m_interviewDate" name="interviewDate" class="form-control" placeholder="YYYY-MM-DD">
+            <small class="text-muted">Only needed if status is Shortlisted/Selected.</small>
+          </div>
+ 
+          <div class="form-group">
+            <label>Final Result</label>
+            <select id="m_finalResult" name="finalResult" class="form-control">
+              <option value="">-- Not decided --</option>
+              <option>Shortlisted</option>
+              <option>Selected</option>
+              <option>Rejected</option>
+              <option>On Hold</option>
+            </select>
+          </div>
+ 	<button  id="saveBtn" type="button"  class="btn btn-primary ">Save</button>
+ 	
+          
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+ 
+<div class="modal fade" id="previewModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content p-2">
+      <div class="modal-header">
+        <h5 class="modal-title">Resume Preview</h5>
+        <button type="button" class="close" data-dismiss="modal">×</button>
+      </div>
+      <div class="modal-body" style="height:80vh;">
+        <iframe id="resumeFrame" src="" style="width:100%;height:100%;border:0;"></iframe>
+      </div>
+    </div>
+  </div>
+</div>
+ 
+
+<script src="js/jquery.min.js"></script>
+<script src="js/bootstrap.bundle.min.js"></script>
+
+
+<script src="plugin/plugin_project/jquery.dataTables.min.js"></script>
+<script src="plugin/plugin_project/select2.min.js"></script>
+<script src="plugin/plugin_project/flatpickr.min.js"></script>
+ 
+
+<script>
+$(function () {
+	  fetch("/JOB_APPLICATION_SYSTEM/RecruiterSessionCheckServlet", {
+	    method: "GET",
+	    credentials: "include"
+	  })
+	    .then(r => (r.ok ? r.json() : { loggedIn: false }))
+	    .then(data => {
+	      if (!data || !data.loggedIn) {
+	        Swal.fire({
+	          icon: 'warning',
+	          title: 'Session Expired',
+	          text: 'Session expired. Please login.',
+	          confirmButtonColor: '#28a745'
+	        }).then(() => {
+	          window.location.href = 
+	              "Employers.html?redirect=" + encodeURIComponent(window.location.href);
+	        });
+	        return;
+	      }
+	      loadApplications();
+	    })
+	    .catch(err => {
+	      console.error("Session check error:", err);
+	      Swal.fire({
+	        icon: 'error',
+	        title: 'Session Error',
+	        text: 'Session check failed',
+	        confirmButtonColor: '#28a745'
+	      }).then(() => {
+	        window.location.href = 
+	            "Employers.html?redirect=" + encodeURIComponent(window.location.href);
+	      });
+	    });
+
+  function esc(s) { return s == null ? "" : String(s); }
+
+  function loadApplications() {
+ 
+    fetch("/JOB_APPLICATION_SYSTEM/RecruiterApplicationsServlet?ts="+
+    		Date.now(),{
+      method: "GET",
+      credentials: "include"
+    })
+      .then(r =>
+        r.ok ? r.json()
+             : r.text().then(t => { throw new Error("HTTP " + r.status + " " + t); })
+      )
+      .then(data => {
+        console.log("apps data:", data);
+        const list = (data && data.applications) ? data.applications : [];
+        const $tb = $("#appsTable tbody");
+        
+
+        if ($.fn.DataTable.isDataTable("#appsTable")) {
+            $("#appsTable").DataTable().clear().destroy();
+        }
+
+        $tb.empty();
+
+        if (!list.length) {
+          $("#emptyBox").show();
+        } else {
+          $("#emptyBox").hide();
+        }
+
+        list.forEach(row => {
+          const hasResume = !!row.hasResume;
+          const previewBtn = hasResume
+            ? `<button class="btn btn-sm btn-outline-primary btn-icon js-preview" data-id="${row.applicationId}">Preview</button>`
+            : `<span class="text-muted">No file</span>`;
+          const downloadBtn = hasResume
+            ? `<a class="btn btn-sm btn-outline-secondary btn-icon" href="/JOB_APPLICATION_SYSTEM/ApplicationResumeDownloadServlet?applicationId=${row.applicationId}">Download</a>`
+            : ``;
+
+          $tb.append(`
+            <tr>
+              <td>${row.jobTitle}<br><small class="text-muted">${esc(row.companyName)} • ${esc(row.location)}</small></td>
+              <td>${row.applicantName}</td>
+              <td>${row.applicantEmail}</td>
+              <td>${row.applicantSkills || "-"}</td>
+              <td>${row.appliedDate || "-"}</td>
+              <td><span class="badge badge-status">${row.status || "-"}</span></td>
+              <td>${row.interviewDate || "-"}</td>
+              <td>${row.finalResult || "-"}</td>
+              <td class="d-flex gap-1">${previewBtn} ${downloadBtn}</td>
+              <td>
+              <button class="btn btn-sm btn-success js-edit"
+                  data-id="${row.applicationId}"
+                  data-status="${esc(row.status || "")}"
+                  data-date="${esc(row.interviewDate || "")}"
+                  data-result="${esc(row.finalResult || "")}"
+                  data-applied="${esc(row.appliedDate || "")}">
+
+                  Edit
+                </button>
+              </td>
+            </tr>
+          `);
+        });
+
+        
+        $("#appsTable th, #appsTable td").css("vertical-align", "middle");
+
+        setTimeout(() => {
+        	$("#appsTable").DataTable({
+        	    lengthMenu: [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
+        	    pageLength: 10,              
+        	    order: [[4, "desc"]],        //   show latest applied first
+        	    autoWidth: false,
+        	    scrollX: false
+        	});
+
+
+        }, 300);
+        
+      })
+      .catch(err => {
+        console.error("loadApplications error:", err);
+        Swal.fire({
+          icon: 'error',
+          title: 'Load Error',
+          text: 'Failed to load applications',
+          confirmButtonColor: '#28a745'
+        });
+      });
+  }
+
+  $(document).on("click", ".js-preview", function () {
+    const id = $(this).data("id");
+    $("#resumeFrame").attr(
+      "src",
+      "/JOB_APPLICATION_SYSTEM/ApplicationResumePreviewServlet?applicationId=" + id
+    );
+    $("#previewModal").modal("show");
+  });
+
+  $(document).on("click", ".js-edit", function () {
+    const $b = $(this);
+    $("#m_applicationId").val($b.data("id"));
+    $("#m_status").val($b.data("status") || "Applied").trigger("change");
+    $("#m_interviewDate").val($b.data("date") || "");
+    $("#m_finalResult").val($b.data("result") || "").trigger("change");
+    $("#m_interviewDate").data("applied-date", $b.data("applied"));
+    $("#editModal").modal("show");
+  });
+
+  $("#m_status").select2({ minimumResultsForSearch: -1 });
+  $("#m_finalResult").select2({ minimumResultsForSearch: -1 });
+
+  var fp; 
+  $(document).on("shown.bs.modal", "#editModal", function () {
+    if (fp) { try { fp.destroy(); } catch (e) {} }
+    const applied = $("#m_interviewDate").data("applied-date");
+
+    fp = flatpickr("#m_interviewDate", {
+        dateFormat: "Y-m-d",
+        allowInput: false,
+        minDate: applied  
+    });
+  });
+  $("#saveBtn").on("click", function (e) {
+	  e.preventDefault(); 
+	  e.stopPropagation();
+
+
+	    const form = new URLSearchParams();
+	    form.append("applicationId", $("#m_applicationId").val());
+	    form.append("status", $("#m_status").val());
+	    form.append("interviewDate", $("#m_interviewDate").val());
+	    form.append("finalResult", $("#m_finalResult").val());
+
+	    fetch("/JOB_APPLICATION_SYSTEM/UpdateApplicationServlet", {
+	        method: "POST",
+	        credentials: "include",
+	        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+	        body: form.toString()
+	    })
+	    .then(r=>r.ok ? r.json(): r.text().then(t=>{throw new Error(t || ("Http" +r.status));}))
+	    .then(j => {
+	    	if (j.ok) {
+	    	    $("#editModal").modal("hide");
+	    	    setTimeout(loadApplications, 300); 
+	    	} else {
+	            Swal.fire({
+	              icon: 'error',
+	              title: 'Update Failed',
+	              text: j.error || 'Update failed',
+	              confirmButtonColor: '#28a745'
+	            });
+	        }
+	    })
+	    .catch(err => {
+	        console.error(err);
+	        Swal.fire({
+	          icon: 'error',
+	          title: 'Error',
+	          text: 'Update failed',
+	          confirmButtonColor: '#28a745'
+	        });
+	    });
+
+	 
+	});
+  $('#editModal').on('hidden.bs.modal', function () {
+	    $('#editForm')[0].reset();
+	    $('#m_status').val('Applied').trigger('change');
+	    $('#m_finalResult').val('').trigger('change');
+	    $('#m_interviewDate').val('');
+	  });
+  
+
+});
+</script>
+ 
+</body>
+</html>
+ 

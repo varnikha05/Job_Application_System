@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Apply for Job | JobBoard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+ 
+  <link rel="stylesheet" href="css/custom-bs.css">
+  <link rel="stylesheet" href="css/style.css">
+ 
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+ 
+  <!-- SweetAlert2 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+ 
+<link rel="stylesheet" href="plugin/jQuery-MultiSelect-master/jquery.multiselect.css">
+<script src="plugin/jQuery-MultiSelect-master/jquery.multiselect.js"></script>
+
+  <style>
+    .apply-box {
+      background: #fff;
+      border-radius: 10px;
+      padding: 30px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      max-width: 700px;
+      margin: auto;
+    }
+ 
+    label { font-weight: 600; margin-top: 15px; display:block; }
+    label span { color:red; }
+ 
+    .form-control {
+      margin-top: 5px;
+      margin-bottom: 5px;
+    }
+ 
+    small.text-red {
+      color:red;
+      display:none;
+      margin-bottom:10px;
+    }
+ 
+    .multiselect-container {
+      width:100% !important;
+    }
+  </style>
+</head>
+<body>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+
+    // 1. Check session
+    fetch("SessionCheckServlet", { method: "GET", credentials: "include" })
+        .then(res => res.json())
+        .then(data => {
+            if (!data.user) {
+                window.location.href = "login.html";
+                return;
+            }
+
+            // 2. Check if user already applied
+            const params = new URLSearchParams(window.location.search);
+            const jobId = params.get("jobId");
+
+            fetch("ApplyJobServlet?jobId=" + jobId)
+                .then(r => r.json())
+                .then(check => {
+                    if (check.applied === true) {
+                        Swal.fire({
+                            icon: "info",
+                            title: "Already Applied",
+                            text: "You have already applied for this job.",
+                            confirmButtonColor: "#28a745"
+                        }).then(() => {
+                            window.location.href = "user-job-details.html?jobId=" + jobId;
+                        });
+                    }
+                });
+        })
+        .catch(() => window.location.href = "login.html");
+});
+
+</script>
+ 
+ 
+<header class="site-navbar mt-3">
+  <div class="container-fluid">
+    <div class="row align-items-center">
+      <div class="site-logo col-6">
+        <a href="user_dashboard.html">JobBoard</a>
+      </div>
+      <nav class="mx-auto site-navigation">
+        <ul class="site-menu js-clone-nav d-none d-xl-block ml-0 pl-0">
+          <li><a href="UserDashboard.html">Home</a></li>
+          <li><a href="my-applications.html">My Applications</a></li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</header>
+ 
+ 
+ 
+<div class="container mt-5 mb-5">
+ 
+  <a href="UserDashboard.html" class="mb-4 d-inline-block">
+     Back to Jobs
+  </a>
+ 
+  <div class="apply-box">
+    <h4 class="text-center text-primary mb-4">Apply for this Job</h4>
+ 
+    <form id="applyForm" method="post" enctype="multipart/form-data">
+ 
+      <input type="hidden" id="jobId" name="jobId">
+ 
+
+      <label>Full Name <span>*</span></label>
+      <input type="text" id="applicantName" name="applicantName" class="form-control">
+      <small id="nameError" class="text-red"></small>
+ 
+
+      <label>Email <span>*</span></label>
+      <input type="email" id="applicantEmail" name="applicantEmail" class="form-control">
+      <small id="emailError" class="text-red"></small>
+ 
+
+      <label>Phone <span>*</span></label>
+      <input type="text" id="applicantPhone" name="applicantPhone" maxlength="10" class="form-control">
+      <small id="phoneError" class="text-red"></small>
+ 
+
+      <label>Qualification <span>*</span></label>
+      <input type="text" id="qualification" name="qualification" class="form-control">
+      <small id="qualificationError" class="text-red"></small>
+ 
+<input type="hidden" id="selectedSkills" name="skills">
+
+      <label>Skills <span>*</span></label>
+      <select id="skills" name="skills[]" multiple="multiple">
+        <option value="Java">Java</option>
+        <option value="Python">Python</option>
+        <option value="HTML">HTML</option>
+        <option value="CSS">CSS</option>
+        <option value="JavaScript">JavaScript</option>
+        <option value="SQL">SQL</option>
+      </select>
+      <small id="skillsError" class="text-red"></small>
+ 
+
+      <label>Location <span>*</span></label>
+      <input type="text" id="location" name="location" class="form-control">
+      <small id="locationError" class="text-red"></small>
+ 
+
+      <label>Cover Letter</label>
+      <textarea id="coverLetter" name="coverLetter" class="form-control"></textarea>
+ 
+
+      <label>Resume <span>*</span></label>
+      <input type="file" id="resume" name="resume" class="form-control" accept=".pdf,.doc,.docx">
+      <small id="resumeError" class="text-red"></small>
+ 
+      <button type="submit" class="btn btn-primary w-100 mt-3">Submit Application</button>
+ 
+    </form>
+  </div>
+</div>
+ 
+ 
+<footer class="site-footer text-center">
+  <p>&copy; <script>document.write(new Date().getFullYear());</script> JobBoard</p>
+</footer>
+ 
+ 
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    // PREFILL USER INFO
+    fetch("UserProfileServlet", { credentials: "include" })
+        .then(res => res.json())
+        .then(data => {
+            if (!data.loggedIn) return;
+
+            document.getElementById("applicantName").value = data.fullName || "";
+            document.getElementById("applicantEmail").value = data.email || "";
+            document.getElementById("applicantPhone").value = data.phone || "";
+            document.getElementById("qualification").value = data.qualification || "";
+        })
+        .catch(err => console.log("Profile load failed", err));
+
+    // SET JOB ID
+    const params = new URLSearchParams(window.location.search);
+    document.getElementById("jobId").value = params.get("jobId");
+
+});
+
+</script>
+ 
+
+<script>
+$(document).ready(function () {
+
+	
+
+    
+  
+    $('#skills').multiselect({
+        columns: 1,
+        placeholder: 'Select your skills',
+        search: true,
+        selectAll: false
+    });
+
+
+ 
+    $(".text-red").hide();
+ 
+    $("#applicantName").on("input", function () {
+        const name = $(this).val().trim();
+        if (name === "") $("#nameError").text("Name is required").show();
+        else if (!/^[A-Za-z\s]{2,}$/.test(name))
+            $("#nameError").text("Only letters allowed").show();
+        else $("#nameError").hide();
+    });
+ 
+ 
+    $("#applicantEmail").on("input", function () {
+        const email = $(this).val().trim();
+        const valid = /^[\w.%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/.test(email);
+        if (email === "") $("#emailError").text("Email is required").show();
+        else if (!valid) $("#emailError").text("Enter valid email").show();
+        else $("#emailError").hide();
+    });
+ 
+  
+    $("#applicantPhone").on("input", function () {
+        let phone = $(this).val().replace(/\D/g, "");
+        if (phone.length > 10) phone = phone.slice(0, 10);
+        $(this).val(phone);
+ 
+        if (phone.length !== 10)
+            $("#phoneError").text("Enter 10-digit phone number").show();
+        else $("#phoneError").hide();
+    });
+
+    $("#qualification").on("input", function () {
+        if ($(this).val().trim() === "")
+            $("#qualificationError").text("Qualification required").show();
+        else $("#qualificationError").hide();
+    });
+ 
+
+    $("#skills").on("change", function () {
+        if ($("#skills option:selected").length < 1)
+            $("#skillsError").text("Select at least 1 skill").show();
+        else $("#skillsError").hide();
+    });
+
+    $("#location").on("input", function () {
+        if ($(this).val().trim() === "")
+            $("#locationError").text("Location required").show();
+        else $("#locationError").hide();
+    });
+ 
+
+    $("#resume").on("change", function () {
+        const file = this.files[0];
+        if (!file) {
+            $("#resumeError").text("Resume required").show();
+            return;
+        }
+        const ext = file.name.split('.').pop().toLowerCase();
+        if (!["pdf", "doc", "docx"].includes(ext))
+            $("#resumeError").text("Upload PDF/DOC only").show();
+        else $("#resumeError").hide();
+    });
+ 
+ 
+ 
+ 
+
+    $("#applyForm").on("submit", function (e) {
+        e.preventDefault();
+ 
+        let valid = true;
+        $("small.text-red").each(function () {
+            if ($(this).is(":visible")) valid = false;
+        });
+ 
+        if ($("#skills option:selected").length < 1) {
+            $("#skillsError").text("Select at least 1 skill").show();
+            valid = false;
+        }
+ 
+        if (!valid) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Validation Error',
+                text: 'Please fix all errors before submitting.',
+                confirmButtonColor: '#28a745'
+            });
+            return;
+        }
+ 		
+        let selected = $("#skills").val();  
+        $("#selectedSkills").val(selected.join(","));
+
+        const formData = new FormData(this);
+ 
+        $.ajax({
+            url: "ApplyJobServlet",
+            type: "POST",
+            data: formData,
+            processData: false,
+            contentType: false,
+ 
+            success: function (response) {
+ 
+                let res = {};
+                try { res = JSON.parse(response); }
+                catch (err) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Unexpected server response.',
+                        confirmButtonColor: '#28a745'
+                    });
+                    return;
+                }
+ 
+                if (res.status === "success") {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: 'Application submitted successfully!',
+                        confirmButtonColor: '#28a745'
+                    }).then(() => {
+                        window.location.href = res.redirect;
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Failed',
+                        text: res.message,
+                        confirmButtonColor: '#28a745'
+                    });
+                }
+            },
+ 
+            error: function () {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Server Error',
+                    text: 'Server error! Please try again.',
+                    confirmButtonColor: '#28a745'
+                });
+            }
+        });
+ 
+    });
+ 
+});
+</script>
+ 
+</body>
+</html>
+ 

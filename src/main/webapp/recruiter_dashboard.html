@@ -1,0 +1,1223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    fetch("SessionCheckServlet", {
+    	method: "GET",
+    	credentials: "include" 
+    	})
+        .then(res => res.json())
+        .then(data => {
+        	if (!data.recruiter) {
+        		window.location.href =
+        		    "Employers.html" ;
+        		return;
+        	}
+        	 document.documentElement.style.visibility = "visible";
+        })
+        .catch(err => {
+        	window.location.href =
+        	    "Employers.html?redirect=" + encodeURIComponent(window.location.href);
+
+        });
+});
+</script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recruiter Dashboard | JobBoard</title>
+    <link rel="stylesheet" href="css/custom-bs.css">
+    <link rel="stylesheet" href="css/jquery.fancybox.min.css">
+    <link rel="stylesheet" href="css/bootstrap-select.min.css">
+    <link rel="stylesheet" href="fonts/icomoon/style.css">
+    <link rel="stylesheet" href="fonts/line-icons/style.css">
+    <link rel="stylesheet" href="css/owl.carousel.min.css">
+    <link rel="stylesheet" href="css/animate.min.css">
+    <link rel="stylesheet" href="css/quill.snow.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.bootstrap5.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: #ffffff;
+            color: #333;
+            line-height: 1.6;
+        }
+    .alert-placeholder {
+      min-height: 48px;
+    }
+        .site-wrap {
+            position: relative;
+        }
+        .dashboard-content {
+            background: white;
+            padding: 3rem 0;
+        }
+        .site-navbar .container-fluid {
+            padding-left: 0;
+            padding-right: 0;
+        }
+        .site-navbar-inner {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1.5rem;
+            padding: 0 2.5rem;
+        }
+        .recruiter-menu-list {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            margin-left: 2rem;
+            list-style: none;
+            padding-left: 0;
+        }
+        .recruiter-nav-link {
+            padding: 0.6rem 0 !important;
+            color: rgba(255, 255, 255, 0.85);
+            font-weight: 600;
+            letter-spacing: 0.03rem;
+            transition: color 0.2s ease;
+            text-decoration: none;
+        }
+        .recruiter-nav-link:hover,
+        .recruiter-nav-link:focus {
+            color: #89ba16;
+            text-decoration: none;
+        }
+        .recruiter-profile-toggle {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.65rem 1.2rem;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 999px;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 600;
+            transition: all 0.2s ease;
+            text-decoration: none;
+        }
+        .recruiter-profile-toggle:hover,
+        .recruiter-profile-toggle:focus {
+            color: #fff;
+            border-color: #89ba16;
+            background-color: rgba(137, 186, 22, 0.15);
+        }
+        .recruiter-profile-dropdown {
+            position: relative;
+        }
+        .recruiter-profile-dropdown .dropdown-menu {
+            min-width: 220px;
+            font-weight: 500;
+        }
+        .recruiter-profile-dropdown .dropdown-item:hover {
+            color: #89ba16;
+        }
+        @media (max-width: 1199.98px) {
+            .site-navbar-inner {
+                padding: 0 1.5rem;
+            }
+        }
+        .nav-pills .nav-link i {
+            width: 18px;
+            margin-right: 12px;
+            font-size: 0.9rem;
+        }
+        .stats-card {
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            background: white;
+        }
+        .stats-card:hover {
+            border-color: #89ba16;
+            box-shadow: 0 4px 8px rgba(137, 186, 22, 0.1);
+        }
+        .stats-card .card-body {
+            padding: 1.5rem;
+        }
+        .stats-card h3 {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #89ba16;
+            margin: 0;
+        }
+        .stats-card p {
+            font-size: 0.9rem;
+            color: #666;
+            margin: 0;
+            font-weight: 400;
+        }
+        .stats-card i {
+            color: #89ba16;
+            opacity: 0.7;
+        }
+        .stat-card {
+            background: linear-gradient(135deg, #89ba16 0%, #6fa013 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 20px;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: none;
+            position: relative;
+            overflow: hidden;
+        }
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(137, 186, 22, 0.3);
+        }
+        .stat-card:hover::before {
+            top: -25%;
+            right: -25%;
+        }
+        .stat-card i {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            opacity: 0.9;
+        }
+        .stat-card h3 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 10px 0;
+        }
+        .stat-card p {
+            margin: 0;
+            font-size: 1.1rem;
+            font-weight: 500;
+            opacity: 0.9;
+        }
+        .card {
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            box-shadow: none;
+            background: white;
+            margin-bottom: 1.5rem;
+        }
+        .card-header {
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+            padding: 1rem 1.5rem;
+            border-radius: 7px 7px 0 0;
+        }
+        .card-header h5 {
+            margin: 0;
+            font-weight: 500;
+            color: #333;
+            font-size: 1rem;
+        }
+        .form-control,
+        .form-select {
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 12px 15px;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+        }
+        .form-control:focus,
+        .form-select:focus {
+            border-color: #89ba16;
+            box-shadow: 0 0 0 0.2rem rgba(137, 186, 22, 0.25);
+        }
+        .form-label {
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+        .form-control,
+        .form-select {
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            padding: 0.75rem;
+        }
+        .form-control:focus,
+        .form-select:focus {
+            border-color: #89ba16;
+            box-shadow: 0 0 0 0.2rem rgba(137, 186, 22, 0.15);
+        }
+        .btn {
+            border-radius: 5px;
+            font-weight: 500;
+            padding: 0.75rem 1.5rem;
+        }
+        .btn-success {
+            background-color: #89ba16;
+            border-color: #89ba16;
+        }
+        .btn-success:hover {
+            background-color: #7aa314;
+            border-color: #7aa314;
+        }
+        .table thead th {
+            background-color: #f8f9fa;
+            color: #333;
+            font-weight: 500;
+            border-bottom: 2px solid #e9ecef;
+            padding: 0.75rem;
+        }
+        .table tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+        .table td {
+            vertical-align: middle;
+            padding: 0.75rem;
+            border-top: 1px solid #e9ecef;
+        }
+        .badge {
+            font-size: 0.8rem;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-weight: 500;
+        }
+        .badge-success { 
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+         }
+        .badge-warning { 
+        background: linear-gradient(135deg, #ffc107 0%, #fd7e14 100%); 
+        }
+        .badge-danger { 
+        background: linear-gradient(135deg, #dc3545 0%, #e83e8c 100%); 
+        }
+        .badge-info { 
+        background: linear-gradient(135deg, #17a2b8 0%, #6f42c1 100%); 
+        }
+        .action-btn {
+            border-radius: 8px;
+            padding: 8px 12px;
+            margin: 2px;
+            font-size: 0.85rem;
+            transition: all 0.2s ease;
+        }
+        .action-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+        }
+        .tab-pane {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @media (max-width: 768px) {
+            .stat-card {
+                margin-bottom: 15px;
+                padding: 20px;
+            }
+            .stat-card h3 {
+                font-size: 2rem;
+            }
+            .table-responsive {
+                font-size: 0.9rem;
+            }
+        }
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .dashboard-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+        .dashboard-content .container-fluid {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #89ba16 0%, #6fa013 100%);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #6fa013 0%, #89ba16 100%);
+        }
+        
+      
+.view-btn {
+    background-color: #89ba16 !important;
+    border: 1px solid #89ba16 !important;
+    color: white !important;
+    font-weight: 600;
+    padding: 6px 12px;
+    border-radius: 6px;
+}
+
+.view-btn:hover {
+    background-color: #7aa314 !important; /* darker hover */
+    border-color: #7aa314 !important;
+    color: #fff !important;
+}
+    /* Light status badges */
+.badge-status {
+    padding: 6px 10px;
+    font-size: 0.8rem;
+    border-radius: 6px;
+    font-weight: 600;
+}
+
+/* Status colors */
+.badge-pending {
+    background-color: #ffe9a6; 
+    color: #705600;
+}
+
+.badge-reviewed {
+    background-color: #cfe8ff;
+    color: #003a63;
+}
+
+.badge-shortlisted {
+    background-color: #d6ffd3;
+    color: #1b4d15;
+}
+
+.badge-selected {
+    background-color: #bdf7a9;
+    color: #245700;
+}
+
+.badge-rejected {
+    background-color: #ffd3d3;
+    color: #7a0000;
+}
+        
+    </style>
+</head>
+<body id="top">
+<script>
+
+function refreshRecentApplications() {
+    loadApplicationsFromServer();
+}
+
+var applications = [];
+
+function loadApplicationsFromServer() {
+    $.ajax({
+        url: "RecruiterApplicationsServlet",
+        type: "GET",
+        dataType: "json",
+        headers: { "X-Requested-With": "XMLHttpRequest" },
+        success: function(response) {
+
+            if (!response || !response.applications) {
+                console.error("Invalid application data");
+                return;
+            }
+///11
+            applications = response.applications.map(function(app) {
+                return {
+                    applicationId: app.applicationId,
+                    applicantName: app.applicantName,
+                    applicantEmail: app.applicantEmail,
+                    applicantSkills: app.applicantSkills,
+                    jobTitle: app.jobTitle,
+                    companyName: app.companyName,
+                    location: app.location,
+                    appliedDate: app.appliedDate,
+                    interviewDate: app.interviewDate,
+                    finalResult: app.finalResult,
+                    status: app.status,
+                    hasResume: app.hasResume
+                };
+            });
+            renderApplicationsTable();
+        },
+        error: function() {
+            console.error("Failed to load applications");
+        }
+    });
+}
+
+function renderApplicationsTable() {
+	  var tbody = document.getElementById('recentApplicationsBody');
+	  if (!tbody) return;  // Prevent null crash
+
+	  tbody.innerHTML = '';
+
+	  applications.forEach(function(app, idx) {
+	    var tr = document.createElement('tr');
+	    tr.innerHTML = `
+	      <td><strong>${escapeHtml(app.applicantName)}</strong><br>
+	          <span class="text-muted">${escapeHtml(app.applicantEmail)}</span></td>
+	      <td>${escapeHtml(app.jobTitle)}</td>
+	      <td>${escapeHtml(app.appliedDate)}</td>
+	      <td>
+	      <span class="badge-status badge-${app.status.toLowerCase()}">
+	        ${escapeHtml(app.status)}
+	      </span>
+	    </td>
+
+	      <td>
+	      <button class="btn btn-sm view-btn" onclick="viewApplicationDetails(${idx})">
+
+	          <i class="fa fa-eye"></i> View
+	        </button>
+	      </td>
+	    `;
+	    tbody.appendChild(tr);
+	  });
+	}//3
+
+function viewApplicationDetails(idx) {
+
+    var app = applications[idx];
+
+    let resumeBlock = "No Resume Uploaded";
+    
+
+    let modalHtml = `
+    <div class="modal fade" id="applicationDetailsModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+
+                <div class="modal-header bg-info text-white">
+                    <h5 class="modal-title">Application Details</h5>
+                    <button type="button" class="close text-white" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+
+                    <h4 class="mb-3"><b>${app.applicantName}</b></h4>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><strong>Email:</strong> ${app.applicantEmail}</p>
+                            <p><strong>Skills:</strong> ${app.applicantSkills || '-'}</p>
+                            <p><strong>Status:</strong> ${app.status}</p>
+                        </div>
+
+                        <div class="col-md-6">
+                            <p><strong>Job Title:</strong> ${app.jobTitle}</p>
+                            <p><strong>Applied Date:</strong> ${app.appliedDate}</p>
+                            <p><strong>Interview Date:</strong> ${app.interviewDate || '-'}</p>
+                            <p><strong>Final Result:</strong> ${app.finalResult || '-'}</p>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                   
+                   
+
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    `;
+
+    $('#applicationDetailsModal').remove();
+    $('body').append(modalHtml);
+    $('#applicationDetailsModal').modal('show');
+}
+//22
+
+function escapeHtml(text) {
+  if (!text) return '';
+  return text.replace(/[&<>'"]/g, function (c) {
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','\'':'&#39;','"':'&quot;'}[c];
+  });
+}
+
+// Render table on page load
+document.addEventListener('DOMContentLoaded', loadApplicationsFromServer);
+
+
+</script>
+
+  <div id="overlayer"></div>
+  <div class="loader">
+    <div class="spinner-border text-primary" role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
+  </div>
+  <div class="site-wrap">
+    <div class="site-mobile-menu site-navbar-target">
+      <div class="site-mobile-menu-header">
+        <div class="site-mobile-menu-close mt-3">
+          <span class="icon-close2 js-menu-toggle"></span>
+        </div>
+      </div>
+      <div class="site-mobile-menu-body"></div>
+    </div>
+    <header class="site-navbar mt-2">
+      <div class="container-fluid">
+        <div class="site-navbar-inner">
+          <div class="site-logo"><a href="index.html">JobBoard</a></div>
+          <nav class="site-navigation flex-grow-1">
+            <ul class="site-menu recruiter-menu-list js-clone-nav mb-0 d-none d-xl-flex">
+              <li><a href="index.html" class="recruiter-nav-link">Home</a></li>
+              <li><a href="post-job.html" class="recruiter-nav-link">Post a Job</a></li>
+              <li><a href="RecruiterDashboardServlet" class="nav-link">Dashboard</a></li>
+              <li><a href="recruiter-applications.html" class="recruiter-nav-link">View Applications</a></li>
+              <li><a href="recruiter-view-jobs.html" class="recruiter-nav-link">View Jobs</a></li>
+              <li class="d-xl-none"><a href="#" onclick="showHelp()">Help &amp; Support</a></li>
+              <li class="d-xl-none"><a href="index.html" onclick="confirmLogout()">Logout</a></li>
+            </ul>
+          </nav>
+          <div class="d-flex align-items-center ms-auto gap-3">
+             <div class="dropdown d-none d-lg-inline-block ml-3">
+            <button class="btn btn-outline-white bg-white text-black border-width-2 dropdown-toggle" type="button" id="adminProfileMenu"
+              data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <i class="icon-user mr-2"></i>Recruiter
+            </button>
+            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="adminProfileMenu">
+              <div class="dropdown-header">
+              <strong>Recruiter Dashboard</strong><br>
+                <small class="text-muted">Welcome back!</small>
+              
+         
+         
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item text-danger" href="index.html" onclick="logout()">
+                <i class="icon-sign-out mr-2"></i>Logout
+              </a>
+            </div>
+          </div>
+          <!-- End enhanced dropdown -->
+        </div>
+        </div>
+      </div>
+    </header>
+    <section class="section-hero overlay inner-page bg-image" style="background-image: url('images/hero_1.jpg');" id="home-section">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-7">
+            <h1 class="text-white font-weight-bold">Recruiter Dashboard</h1>
+            <div class="custom-breadcrumbs">
+              <a href="#">Home</a> <span class="mx-2 slash">/</span>
+              <a href="#">Recruiter</a> <span class="mx-2 slash">/</span>
+              <span class="text-white"><strong>Dashboard</strong></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <div style="display:none;">
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <i class="fas fa-user-circle me-2 fa-lg"></i>
+          <span class="me-1">Recruiter</span>
+        </a>
+        <li>
+          <a class="dropdown-item py-2" href="#" onclick="demoFunction('Help')">
+            <i class="fas fa-question-circle me-3 text-warning"></i>Help &amp; Support
+          </a>
+        </li>
+        <li><hr class="dropdown-divider"></li>
+        <li>
+          <a class="dropdown-item py-2 text-danger" href="#" onclick="demoLogout()">
+            <i class="fas fa-sign-out-alt me-3"></i>
+            <strong>Logout</strong>
+          </a>
+        </li>
+      </li>
+    </div>
+    <section class="site-section dashboard-content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+            <div class="row mb-4">
+              <div class="col-12">
+        
+                <h2 class="dashboard-title">Recruiter Dashboard</h2>
+                <p class="text-muted">Manage your job postings and track applications</p>
+                <div id="dashboardMessage" class="alert-placeholder"></div>
+              </div>
+            </div>
+            <div class="row mb-4">
+              <div class="col-lg-3 col-md-6 mb-3">
+                <div class="card stats-card">
+                  <div class="card-body text-center">
+                    <i class="fas fa-briefcase fa-2x mb-2"></i>
+                    <h3 id="totalJobs" class="mb-1">0</h3>
+                    <p class="mb-0">Total Jobs Posted</p>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-3 col-md-6 mb-3">
+                <div class="card stats-card">
+                  <div class="card-body text-center">
+                    <i class="fas fa-users fa-2x mb-2"></i>
+                    <h3 id="totalApplications" class="mb-1">0</h3>
+                    <p class="mb-0">Total Applications</p>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-3 col-md-6 mb-3">
+                <div class="card stats-card">
+                  <div class="card-body text-center">
+                    <i class="fas fa-check-circle fa-2x mb-2"></i>
+                    <h3 id="activeJobs" class="mb-1">0</h3>
+                    <p class="mb-0">Active Jobs</p>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-3 col-md-6 mb-3">
+                <div class="card stats-card">
+                  <div class="card-body text-center">
+                    <i class="fas fa-calendar fa-2x mb-2"></i>
+                    <h3 id="todayApplications" class="mb-1">0</h3>
+                    <p class="mb-0">Today's Applications</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row mb-4">
+              <div class="col-lg-8 mb-3">
+                <div class="card">
+                  <div class="card-header">
+                    <h5 class="mb-0">Application Trends</h5>
+                  </div>
+                  <div class="card-body">
+                    <canvas id="applicationTrendsChart" height="100"></canvas>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-4 mb-3">
+                <div class="card">
+                  <div class="card-header">
+                    <h5 class="mb-0">Job Status Distribution</h5>
+                  </div>
+                  <div class="card-body">
+                    <canvas id="jobStatusChart" height="150"></canvas>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Recent Applications</h5>
+                <button class="btn btn-outline-primary btn-sm" onclick="refreshRecentApplications()">
+                  <i class="fas fa-refresh"></i> Refresh
+                </button>
+              </div>
+              <div class="card-body">
+                <div class="table-responsive">
+                  <table class="table table-hover" id="recentApplicationsTable">
+                    <thead>
+                      <tr>
+                        <th>Candidate</th>
+                        <th>Job Title</th>
+                        <th>Applied Date</th>
+                        <th>Status</th>
+                        <th>View</th>
+                      </tr>
+                    </thead>
+                   <tbody id="recentApplicationsBody"></tbody>
+                    
+                <!-- Modal will be created dynamically -->
+                <script>
+                function viewApplicationDetails(idx) {
+
+                    var app = applications[idx]; 
+
+                
+                    let resumeBlock = "No file";
+                    if (app.hasResume) {
+                        resumeBlock = `<a href="DownloadResumeServlet?applicationId=${app.applicationId}"
+                                        class="btn btn-sm btn-primary" target="_blank">
+                                        <i class='fa fa-download'></i>r
+                                       </a>`;
+                    }
+
+                   
+                    let modalHtml = `
+                    <div class="modal fade" id="applicationDetailsModal" tabindex="-1">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+
+                                <div class="modal-header bg-info text-white">
+                                    <h5 class="modal-title">Application Details</h5>
+                                    <button type="button" class="close text-white" data-dismiss="modal">
+                                        <span>&times;</span>
+                                    </button>
+                                </div>
+
+                                <div class="modal-body">
+
+                                    <h5 class="mb-3"><b>${app.applicantName}</b></h5>
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <p><strong>Email:</strong> ${app.applicantEmail}</p>
+                                            <p><strong>Skills:</strong> ${app.applicantSkills || '-'}</p>
+                                            <p><strong>Status:</strong> ${app.status}</p>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <p><strong>Job Title:</strong> ${app.jobTitle}</p>
+                                            <p><strong>Applied Date:</strong> ${app.appliedDate}</p>
+                                            <p><strong>Interview Date:</strong> ${app.interviewDate || '-'}</p>
+                                            <p><strong>Final Result:</strong> ${app.finalResult || '-'}</p>
+                                        </div>
+                                    </div>
+
+
+
+                                </div>
+
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                                        Close
+                                    </button>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    `;
+
+              
+                    $('#applicationDetailsModal').remove();
+
+                    $('body').append(modalHtml);
+
+                    $('#applicationDetailsModal').modal('show');
+                }
+
+                </script>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+      
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="site-section" id="tabs-section">
+      <div class="container-fluid">
+        <div class="tab-content">
+          <div class="tab-pane fade" id="my-jobs">
+            <div class="row mb-4">
+              <div class="col-md-8">
+                <h2 class="dashboard-title">My Posted Jobs</h2>
+                <p class="text-muted">Manage and track your job postings</p>
+              </div>
+              <div class="col-md-4 text-end">
+                    <select class="form-select" id="jobFilter">
+                  <option value="">All Jobs</option>
+                  <option value="Active">Active Jobs</option>
+                  <option value="Closed">Closed Jobs</option>
+                  <option value="Draft">Draft Jobs</option>
+                </select>
+              </div>
+            </div>
+            <div class="card shadow">
+              <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="fas fa-briefcase me-2"></i>Job Listings</h5>
+                <button class="btn btn-primary btn-sm" onclick="refreshJobsTable()">
+                  <i class="fas fa-refresh me-1"></i> Refresh
+                </button>
+              </div>
+              <div class="card-body">
+                <div class="table-responsive">
+                  <table class="table table-hover" id="jobsTable">
+                    <thead class="table-dark">
+                      <tr>
+                        <th>Job Title</th>
+                        <th>Location</th>
+                        <th>Applications</th>
+                        <th>Posted Date</th>
+                        <th>Deadline</th>
+                        <th>Status</th>
+                        <th>View</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td colspan="8" class="text-center text-muted py-4">
+                          <i class="fas fa-spinner fa-spin me-2"></i>Loading your posted jobs...
+                        </td>
+                      </tr>
+                      <!-- Example row: Replace with your dynamic row rendering logic -->
+                      <!--
+                      <tr>
+                        <td>{{job.title}}</td>
+                        <td>{{job.location}}</td>
+                        <td>{{job.applications}}</td>
+                        <td>{{job.postedDate}}</td>
+                        <td>{{job.deadline}}</td>
+                        <td>{{job.status}}</td>
+                        <td>
+                          Job ID: <span class="text-muted">{{job.jobId}}</span><br>
+                          <a href="job-details.html?jobId={{job.jobId}}" class="text-primary">Details</a>
+                        </td>
+                        <td><!-- Actions --></td>
+                      </tr>
+                      -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="tab-pane fade" id="applications">
+            <div class="row mb-4">
+              <div class="col-md-6">
+                <h2 class="dashboard-title">Job Applications</h2>
+                <p class="text-muted">Review and manage candidate applications</p>
+              </div>
+              <div class="col-md-6">
+                <div class="row g-2">
+                  <div class="col-6">
+                    <select class="form-select" id="applicationFilter">
+                      <option value="">All Applications</option>
+                      <option value="Pending">Pending Review</option>
+                      <option value="Reviewed">Reviewed</option>
+                      <option value="Shortlisted">Shortlisted</option>
+                      <option value="Selected">Selected</option>
+                      <option value="Rejected">Rejected</option>
+                    </select>
+                  </div>
+                  <div class="col-6">
+                    <select class="form-select" id="dateFilter">
+                      <option value="">All Time</option>
+                      <option value="today">Today</option>
+                      <option value="week">This Week</option>
+                      <option value="month">This Month</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="card shadow">
+              <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="fas fa-file-alt me-2"></i>Applications Overview</h5>
+                <div class="d-flex gap-2">
+                  <button class="btn btn-outline-success btn-sm" onclick="exportApplications()">
+                    <i class="fas fa-download me-1"></i> Export
+                  </button>
+                  <button class="btn btn-primary btn-sm" onclick="refreshApplicationsTable()">
+                    <i class="fas fa-refresh me-1"></i> Refresh
+                  </button>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="table-responsive">
+                  <table class="table table-hover" id="applicationsTable">
+                    <thead class="table-dark">
+                      <tr>
+                        <th>Applicant</th>
+                        <th>Job Title</th>
+                        <th>Applied Date</th>
+                        <th>Skills</th>
+                        <th>Status</th>
+                        <th>Resume</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                       
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="tab-pane fade" id="analytics">
+            <div class="row mb-4">
+              <div class="col-12">
+                <h2 class="dashboard-title">Analytics &amp; Reports</h2>
+                <p class="text-muted">Detailed insights into your recruitment activities</p>
+              </div>
+            </div>
+            <div class="row mb-4">
+              <div class="col-lg-3 col-md-6 mb-3">
+                <div class="card stats-card stats-primary">
+                  <div class="card-body text-center">
+                    <i class="fas fa-chart-line fa-2x mb-3"></i>
+                    <h3 id="avgApplications">0</h3>
+                    <p class="mb-0">Avg Applications/Job</p>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-3 col-md-6 mb-3">
+                <div class="card stats-card stats-success">
+                  <div class="card-body text-center">
+                    <i class="fas fa-percentage fa-2x mb-3"></i>
+                    <h3 id="selectionRate">0%</h3>
+                    <p class="mb-0">Selection Rate</p>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-3 col-md-6 mb-3">
+                <div class="card stats-card stats-info">
+                  <div class="card-body text-center">
+                    <i class="fas fa-clock fa-2x mb-3"></i>
+                    <h3 id="avgTimeToHire">0</h3>
+                    <p class="mb-0">Days to Hire</p>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-3 col-md-6 mb-3">
+                <div class="card stats-card stats-warning">
+                  <div class="card-body text-center">
+                    <i class="fas fa-star fa-2x mb-3"></i>
+                    <h3 id="topSkill">N/A</h3>
+                    <p class="mb-0">Most Demanded Skill</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-6 mb-4">
+                <div class="card">
+                  <div class="card-header">
+                    <h5 class="mb-0">Monthly Hiring Trends</h5>
+                  </div>
+                  <div class="card-body">
+                    <canvas id="monthlyHiringChart" height="150"></canvas>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-6 mb-4">
+                <div class="card">
+                  <div class="card-header">
+                    <h5 class="mb-0">Application Sources</h5>
+                  </div>
+                  <div class="card-body">
+                    <canvas id="applicationSourceChart" height="150"></canvas>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+      <footer class="site-footer">
+
+      <a href="#top" class="smoothscroll scroll-top">
+        <span class="icon-keyboard_arrow_up"></span>
+      </a>
+
+      <div class="container">
+        <div class="row mb-5">
+          <div class="col-6 col-md-3 mb-4 mb-md-0">
+            <h3>Search Trending</h3>
+            <ul class="list-unstyled">
+              <li><a href="#">Web Design</a></li>
+              <li><a href="#">Graphic Design</a></li>
+              <li><a href="#">Web Developers</a></li>
+              <li><a href="#">Python</a></li>
+              <li><a href="#">HTML5</a></li>
+              <li><a href="#">CSS3</a></li>
+            </ul>
+          </div>
+          <div class="col-6 col-md-3 mb-4 mb-md-0">
+            <h3>Company</h3>
+            <ul class="list-unstyled">
+              <li><a href="#">About Us</a></li>
+              <li><a href="#">Career</a></li>
+              <li><a href="#">Blog</a></li>
+              <li><a href="#">Resources</a></li>
+            </ul>
+          </div>
+          <div class="col-6 col-md-3 mb-4 mb-md-0">
+            <h3>Support</h3>
+            <ul class="list-unstyled">
+              <li><a href="#">Support</a></li>
+              <li><a href="#">Privacy</a></li>
+              <li><a href="#">Terms of Service</a></li>
+            </ul>
+          </div>
+          <div class="col-6 col-md-3 mb-4 mb-md-0">
+            <h3>Contact Us</h3>
+            <div class="footer-social">
+              <a href="#"><span class="icon-facebook"></span></a>
+              <a href="#"><span class="icon-twitter"></span></a>
+              <a href="#"><span class="icon-instagram"></span></a>
+              <a href="#"><span class="icon-linkedin"></span></a>
+            </div>
+          </div>
+        </div>
+
+        <div class="row text-center">
+          <div class="col-12">
+            <p class="copyright"><small>
+              <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+            Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="icon-heart text-danger" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank" >Colorlib</a>
+            <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. --></small></p>
+          </div>
+        </div>
+      </div>
+    </footer>
+  
+  <script src="js/jquery.min.js"></script>
+  <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="js/jquery.sticky.js"></script>
+    <script src="js/main.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.bootstrap5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/recruiter-dashboard.js"></script>
+     <script src="js/isotope.pkgd.min.js"></script>
+    <script src="js/stickyfill.min.js"></script>
+    <script src="js/jquery.fancybox.min.js"></script>
+    <script src="js/jquery.easing.1.3.js"></script>
+    <script src="js/jquery.waypoints.min.js"></script>
+    <script src="js/jquery.animateNumber.min.js"></script>
+    <script src="js/owl.carousel.min.js"></script>
+    <script src="js/bootstrap-select.min.js"></script>
+    <script src="js/custom.js"></script>
+    
+<script>
+ 
+  $(document).ready(function() {
+
+    console.log('Recruiter Dashboard loaded successfully');
+
+   
+    if (!window.showNotification) {
+      window.showNotification = function(message, type = 'info') {
+        console.log(type.toUpperCase() + ': ' + message);
+      };
+    }
+
+ 
+    window.loadRecruiterStats = function() {
+      $.ajax({
+        url: "RecruiterStatsServlet",
+        type: "GET",
+        dataType: "json",
+        success: function (data) {
+          if (data.error) {
+            console.error(data.error);
+            return;
+          }
+
+     
+          $("#totalJobs").text(data.totalJobs || 0);
+          $("#activeJobs").text(data.activeJobs || 0);
+          $("#totalApplications").text(data.totalApplications || 0);
+          $("#todayApplications").text(data.todayApplications || 0);
+        },
+        error: function () {
+          console.error("Error loading recruiter statistics.");
+        }
+      });
+    };
+
+
+    loadRecruiterStats();
+
+
+    setInterval(loadRecruiterStats, 15000);
+
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("refresh") === "1") {
+      console.log("Refresh parameter detected in URL. Reloading dashboard stats...");
+      setTimeout(function() {
+        loadRecruiterStats();
+        console.log("Dashboard refreshed after posting job.");
+     
+        history.replaceState({}, document.title, window.location.pathname);
+      }, 1000);
+    }
+
+    $(window).on('resize', function() {}).trigger('resize');
+  });
+
+ 
+  (function() {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('msg') === 'success') {
+      Swal.fire({
+        icon: 'success',
+        title: 'Success!',
+        text: 'Job posted successfully!',
+        confirmButtonColor: '#28a745'
+      });
+    } else if (params.get('msg') === 'failed') {
+      Swal.fire({
+        icon: 'error',
+        title: 'Failed',
+        text: 'Failed to post job. Try again.',
+        confirmButtonColor: '#28a745'
+      });
+    }
+  })();
+  
+  setInterval(() => {
+	    fetch("SessionCheckServlet", {
+	        method: "GET",
+	        credentials: "include"
+	    })
+	    .then(res => res.json())
+	    .then(data => {
+	        if (!data.loggedIn) {   
+	            window.location.href = "Employers.html";
+	        }
+	    })
+	    .catch(err => {
+	        window.location.href = "Employers.html";
+	    });
+	}, 3000);
+
+</script>
+
+<script>
+window.onload = loadApplicationsFromServer;
+</script>
+   
+  </div>
+
+</body>
+</html>
